@@ -12,9 +12,8 @@ package main
 
 import (
 	"discordbot/botcommands"
-	"discordbot/sql-interface"
 	"discordbot/logging"
-	"discordbot/webserver"
+	"discordbot/sql-interface"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/gorilla/handlers"
@@ -27,20 +26,16 @@ const ( // General constants for connecting to the bot
 
 )
 
-//initialization function
-//having issues running this on the EC2 server. Need to look into that
-func init() {
-	// tries to login to the database. If it fails the program exits.
-	if (database.Login()) == true {
-		logger.Log.Info("Connected to CMHoC's Database")
-	} else {
-		logger.Log.Fatal("Could not connect to the Database")
-	}
-}
-
 func main() {
 	//starting up the web server
 	web := mux.NewRouter()
+
+	//connecting to the database
+	db := database.Login()
+	//pulling bill data
+	bills := database.Billsr(db)
+	fmt.Println(bills)
+	logger.Log.Info("Bills Loaded")
 
 	//Followings is all for the discord bot
 	discord, err := discordgo.New("Bot " + bottoken)
@@ -59,8 +54,8 @@ func main() {
 	web.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("./webserver/"))))
 
 	//webserver handlers
-	web.Handle("/vote", webserver.BillHandler).Methods("GET")
-	web.Handle("/vote/{bill}", webserver.AddVoteHandler).Methods("POST")
+	//web.Handle("/vote", webserver.BillHandler).Methods("GET")
+	//web.Handle("/vote/{bill}", webserver.AddVoteHandler).Methods("POST")
 
 	//Open the webserver
 	err = http.ListenAndServe(":8080", handlers.LoggingHandler(os.Stdout, web))

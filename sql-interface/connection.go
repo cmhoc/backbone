@@ -4,9 +4,8 @@ package database
 
 import (
 	"database/sql"
+	"discordbot/logging"
 	"fmt"
-	"log"
-
 	_ "github.com/lib/pq"
 )
 
@@ -14,11 +13,11 @@ import (
 // dbinfo declaration
 // to be changed to an elections specific user to only give them access to nessecary DB parts
 const (
-	
+
 )
 
 // connection function
-func Login() bool {
+func Login() *sql.DB {
 
 	// putting everything needed into one string
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
@@ -27,16 +26,7 @@ func Login() bool {
 
 	// opening the sql connection
 	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	err = db.Ping()
-
-	// error check and returning if it connected
-	if err != nil {
-		return false
-	} else {
-		return true
-	}
+	if err != nil {logger.Log.Panic(err)}
+	logger.Log.Info("Database Logged In")
+	return db
 }

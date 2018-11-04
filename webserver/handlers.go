@@ -1,15 +1,13 @@
 package webserver
 
 import (
-	"encoding/json"
-	"github.com/gorilla/mux"
 	"net/http"
 )
 
 var NotImplemented = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 	w.Write([]byte("Not Implemented"))
 })
-
+/*
 var BillHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 	payload, _ := json.Marshal(Votestest)
 
@@ -18,12 +16,12 @@ var BillHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
 })
 
 var AddVoteHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request){
-	var vote vote
+	var vote bill
 	vars := mux.Vars(r)
 	bill := vars["bill"]
 
 
-	for _, p := range Votestest {
+	for _, p := range Bills {
 		if p.BillId == bill {
 			vote = p
 		}
@@ -37,3 +35,11 @@ var AddVoteHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 		w.Write([]byte("Product Not Found"))
 	}
 })
+
+func Test(w http.ResponseWriter, r *http.Request) {
+	//t := template.New("sheet template") // Create a template.
+	//t, _ = t.ParseFiles("sheet.html", nil)  // Parse template file.
+	//user := GetUser() // Get current user information.
+	//t.Execute(w, user)  // merge.
+}
+*/

@@ -1,11 +1,10 @@
 package webserver
 
-type vote struct {
+type Bill struct {
 	BillId string
 	BillName string
+	BillSlot string
 	Author string
-}
-
-var Votestest = []vote{
-	{"M-1", "An Act to Test a System", "thehowlinggreywolf"},
+	Sponsor string
+	Parliament string
 }
