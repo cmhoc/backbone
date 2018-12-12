@@ -5,17 +5,24 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/paddycarey/gophy"
 	"github.com/sirupsen/logrus"
+	"log"
 	"math/rand"
+	"os"
 	"time"
+	"strings"
 )
 
-var(
-	userid = "402846073045123082"
+//constants used for ALL of the discord package (Vars also all of the discord package)
+const (
+	userid        = "402846073045123082"
 	commandPrefix = "./"
+	Serverid = "172223256277942273"
 )
+
+var server *discordgo.Guild
 
 //simple testing command
-func Hereboy(discord *discordgo.Session, message *discordgo.MessageCreate){
+func Hereboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 
 	if message.Author.ID == discord.State.User.ID {
 		return
@@ -31,8 +38,8 @@ func Hereboy(discord *discordgo.Session, message *discordgo.MessageCreate){
 //messagelog
 func Messagelog(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	user := message.Author
-	server := discord.State.Guilds[1]
-	if user.ID == userid|| user.Bot {
+	server := discord.State.Guilds[0]
+	if user.ID == userid || user.Bot {
 		//Do nothing because the bot is talking
 		return
 	}
@@ -47,7 +54,8 @@ func Messagelog(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	//pretty log
 	logger.Log.WithFields(logrus.Fields{
 		"Message": message.Content,
-		"Sever": server.Name,
+		"Sever":   server.Name,
+		"ServerID": server.ID,
 		//"Author": message.Author,
 		//"Channel": message.ChannelID,
 		//"Time": message.Timestamp,
@@ -81,19 +89,21 @@ func Fetch(discord *discordgo.Session, message *discordgo.MessageCreate) {
 
 func Goodboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	//using gophy to get dog gifs
-	if  message.Content == commandPrefix + "goodboy" {
+	if message.Content == commandPrefix + "goodboy" {
 		rand.Seed(time.Now().UTC().UnixNano())
 		limit := 50
 		co := &gophy.ClientOptions{}
 		client := gophy.NewClient(co)
 		gif, err := client.GetGifById("ygCJ5Bul73NArGOSFN")
-		if err != nil {logger.Log.Error("Problem Initializing Gifs")}
-		gifs, numgifs, err := client.SearchGifs("dog","pg",limit,0)
+		if err != nil {
+			logger.Log.Error("Problem Initializing Gifs")
+		}
+		gifs, numgifs, err := client.SearchGifs("dog", "pg", limit, 0)
 		if err != nil {
 			logger.Log.Error("Problem Loading Gifs")
 		} else {
 			logger.Log.WithFields(logrus.Fields{
-				"Gifs": len(gifs),
+				"Gifs":               len(gifs),
 				"#Reportedly Loaded": numgifs,
 			}).Debug("Number of Gifs loaded")
 		}
@@ -102,8 +112,8 @@ func Goodboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		logger.Log.WithField("gif#", count).Trace("Gif Set for embed")
 
 		discord.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
-			Author:      &discordgo.MessageEmbedAuthor{},
-			Color:       0x696969, // Grey
+			Author: &discordgo.MessageEmbedAuthor{},
+			Color:  0x696969, // Grey
 			Image: &discordgo.MessageEmbedImage{
 				URL: "https://media.giphy.com/media/" + gif.Id + "/giphy.gif",
 			},
@@ -114,9 +124,42 @@ func Goodboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 }
 
 func Eatthepuppy(discord *discordgo.Session, message *discordgo.MessageCreate) {
-	if  message.Content == commandPrefix + "eatthepuppy" {
+	if message.Content == commandPrefix + "eatthepuppy" {
 		user := message.Author.Mention()
 		send := "?ban " + user + " No eating the puppy"
 		discord.ChannelMessageSend(message.ChannelID, send)
+	}
+}
+
+func Shakeapaw(discord *discordgo.Session, message *discordgo.MessageCreate) {
+	if message.Content == commandPrefix + "shakeapaw" {
+		embed :=  &discordgo.MessageEmbed{
+			Author: &discordgo.MessageEmbedAuthor{},
+			Color:  0x696969, // Grey
+			Image: &discordgo.MessageEmbedImage{
+				URL: "https://static1.squarespace.com/static/5907d42520099e374ad11ba1/t/59197af9c534a5e1ade4a2b8/1494842118347/dog-shake-hands.jpg?format=500w",
+			},
+		}
+		discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+	}
+}
+
+//TODO: make a command that adds items to a todo list
+
+func Todo(discord *discordgo.Session, message *discordgo.MessageCreate) {
+	if strings.Contains(message.Content, commandPrefix + "todo") {
+		if message.Author.ID == "155084706868625408" {
+			//trimming prefix to just get the message
+			temp := strings.TrimPrefix(message.Content, commandPrefix + "todo ")
+			//outputting to the files
+			output, err := os.OpenFile("todo", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+			if err != nil {
+				log.Panic("Error Opening File")
+			}
+			output.WriteString("["+temp+"] ")
+			defer output.Close()
+			//success message
+			discord.ChannelMessageSend(message.ChannelID, "Todo content added " + "[" + temp + "]")
+		}
 	}
 }

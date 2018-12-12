@@ -9,11 +9,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
-
 // dbinfo declaration
 // to be changed to an elections specific user to only give them access to nessecary DB parts
 const (
-
+	host     = ""
+	port     =
+	user     = ""
+	password = ""
+	dbname   = ""
 )
 
 // connection function
@@ -26,7 +29,9 @@ func Login() *sql.DB {
 
 	// opening the sql connection
 	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {logger.Log.Panic(err)}
+	if err != nil {
+		logger.Log.Panic(err)
+	}
 	logger.Log.Info("Database Logged In")
 	return db
 }

@@ -1,8 +1,9 @@
 package botcommands
 
 import (
+	"discordbot/logging"
 	"github.com/bwmarrin/discordgo"
-	"time"
+	"github.com/sirupsen/logrus"
 )
 
 func Help(discord *discordgo.Session, message *discordgo.MessageCreate) {
@@ -36,12 +37,46 @@ func Help(discord *discordgo.Session, message *discordgo.MessageCreate) {
 				Value:  "Shows a random dog gif",
 				Inline: true,
 			},
+			&discordgo.MessageEmbedField{
+				Name:   "./shakeapaw",
+				Value:  "Shake a paw!",
+				Inline: true,
+			},
 		},
-		Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
-		Title:     "A List of non-Server Specific Commands",
+		//Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
+		Title: "A List of non-Server Specific Commands",
 	}
 
-	if  message.Content == "./help" {
+	if message.Content == "./help" {
 		discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+	}
+}
+
+//somethings broken here with the for loop. It literally worked before and it wasnt changed
+func Cmhochelp(discord *discordgo.Session, message *discordgo.MessageCreate) {
+	var temp string
+	server, _ := discord.Guild(Serverid)
+	logger.Log.WithFields(logrus.Fields{"#Channels": len(server.Channels)}).Debug("CMHoC Channels")
+
+	embed := &discordgo.MessageEmbed{
+		Author: &discordgo.MessageEmbedAuthor{},
+		Color:  0x696969, // Grey
+		Fields: []*discordgo.MessageEmbedField{
+			{
+				Name:   "./seats",
+				Value:  "WIP",
+				Inline: true,
+			},
+		},
+		Title: "A List of CMHoC Specific Commands",
+	}
+
+	if message.Content == commandPrefix + "helpcmhoc" {
+		for i := 0; i < len(server.Channels); i++ {
+			temp = server.Channels[i].ID
+			if message.ChannelID == temp {
+				discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+			}
+		}
 	}
 }

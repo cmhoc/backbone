@@ -3,41 +3,52 @@ package database
 import (
 	"database/sql"
 	"discordbot/logging"
-	"discordbot/webserver"
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	BillId []string
-	BillName []string
-	BillSlot []string
-	Author []string
-	Sponsor []string
-	Parliament []string
-	bills []webserver.Bill
-)
+type Bill struct {
+	BillId     string `json:"billid"`
+	BillName   string `json:"billname"`
+	BillSlot   string `json:"billslot"`
+	Author     string `json:"author"`
+	Sponsor    string `json:"sponsor"`
+	Parliament string `json:"parliament"`
+}
 
-func Billsr(db *sql.DB) []webserver.Bill {
+var Bills = make(map[int]Bill)
+
+func Billsr(db *sql.DB) map[int]Bill {
+	var (
+		BillId     string
+		BillName   string
+		BillSlot   string
+		Author     string
+		Sponsor    string
+		Parliament string
+	)
+	i := 0
 	rows, err := db.Query("SELECT * FROM bill_info;")
-	if err != nil {logger.Log.Panic("Could not load SQL Bill Data")}
-	defer rows.Close()
-	rows.Scan(&BillId, &BillName, &BillSlot, &Author, &Sponsor, &Parliament)
-	logger.Log.WithFields(logrus.Fields{
-		"BillId": BillId,
-		"BillName": BillName,
-		"BillSlot": BillSlot,
-		"Author": Author,
-		"Sponsor": Sponsor,
-		"Parl": Parliament,
-	}).Trace("Bills Scanned")
-	for i := 0; i < len(BillId); i++ {
-		bills = []webserver.Bill{
-			{BillId: BillId[i],
-			BillName: BillName[i],
-			BillSlot: BillSlot[i],
-			Author: Author[i],
-			Sponsor: Sponsor[i],
-			Parliament: Parliament[i]}}
+	if err == sql.ErrNoRows {
+		logger.Log.Error("No Rows were Returned - Bills")
 	}
-	return bills
+	if err != nil {
+		logger.Log.Panic("Could not load SQL Bill Data")
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&BillId, &BillName, &BillSlot, &Author, &Sponsor, &Parliament)
+		logger.Log.WithFields(logrus.Fields{
+			"BillId":   BillId,
+			"BillName": BillName,
+			"BillSlot": BillSlot,
+			"Author":   Author,
+			"Sponsor":  Sponsor,
+			"Parl":     Parliament,
+		}).Trace("Bills Scanned")
+		Bills[i] = Bill{
+			BillId, BillName, BillSlot, Author, Sponsor, Parliament,
+		}
+		i += 1
+	}
+	return Bills
 }
