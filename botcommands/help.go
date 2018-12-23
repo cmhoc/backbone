@@ -1,7 +1,7 @@
 package botcommands
 
 import (
-	"discordbot/logging"
+	"backbone/tools"
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
 )
@@ -56,7 +56,7 @@ func Help(discord *discordgo.Session, message *discordgo.MessageCreate) {
 func Cmhochelp(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	var temp string
 	server, _ := discord.Guild(Serverid)
-	logger.Log.WithFields(logrus.Fields{"#Channels": len(server.Channels)}).Debug("CMHoC Channels")
+	tools.Log.WithFields(logrus.Fields{"#Channels": len(server.Channels)}).Debug("CMHoC Channels")
 
 	embed := &discordgo.MessageEmbed{
 		Author: &discordgo.MessageEmbedAuthor{},
@@ -71,7 +71,7 @@ func Cmhochelp(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		Title: "A List of CMHoC Specific Commands",
 	}
 
-	if message.Content == commandPrefix + "helpcmhoc" {
+	if message.Content == commandPrefix+"helpcmhoc" {
 		for i := 0; i < len(server.Channels); i++ {
 			temp = server.Channels[i].ID
 			if message.ChannelID == temp {

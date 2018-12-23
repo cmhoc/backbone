@@ -1,8 +1,8 @@
 package database
 
 import (
+	"backbone/tools"
 	"database/sql"
-	"discordbot/logging"
 	"github.com/sirupsen/logrus"
 )
 
@@ -29,15 +29,15 @@ func Billsr(db *sql.DB) map[int]Bill {
 	i := 0
 	rows, err := db.Query("SELECT * FROM bill_info;")
 	if err == sql.ErrNoRows {
-		logger.Log.Error("No Rows were Returned - Bills")
+		tools.Log.Error("No Rows were Returned - Bills")
 	}
 	if err != nil {
-		logger.Log.Panic("Could not load SQL Bill Data")
+		tools.Log.Panic("Could not load SQL Bill Data")
 	}
 	defer rows.Close()
 	for rows.Next() {
 		rows.Scan(&BillId, &BillName, &BillSlot, &Author, &Sponsor, &Parliament)
-		logger.Log.WithFields(logrus.Fields{
+		tools.Log.WithFields(logrus.Fields{
 			"BillId":   BillId,
 			"BillName": BillName,
 			"BillSlot": BillSlot,

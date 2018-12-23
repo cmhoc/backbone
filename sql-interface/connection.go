@@ -3,20 +3,20 @@
 package database
 
 import (
+	"backbone/tools"
 	"database/sql"
-	"discordbot/logging"
 	"fmt"
 	_ "github.com/lib/pq"
 )
 
 // dbinfo declaration
-// to be changed to an elections specific user to only give them access to nessecary DB parts
-const (
-	host     = ""
-	port     =
-	user     = ""
-	password = ""
-	dbname   = ""
+// to be changed to an elections specific user to only give them access to necessary DB parts
+var (
+	host     = tools.Conf.GetString("host")
+	port     = tools.Conf.GetInt("port")
+	user     = tools.Conf.GetString("user")
+	password = tools.Conf.GetString("password")
+	dbname   = tools.Conf.GetString("dbname")
 )
 
 // connection function
@@ -30,8 +30,8 @@ func Login() *sql.DB {
 	// opening the sql connection
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		logger.Log.Panic(err)
+		tools.Log.Panic(err)
 	}
-	logger.Log.Info("Database Logged In")
+	tools.Log.Info("Database Logged In")
 	return db
 }

@@ -1,7 +1,8 @@
 //created as a separate file for easy use in other files
-package logger
+package tools
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"log"
@@ -18,7 +19,13 @@ func init() {
 	Conf.AddConfigPath(".")
 	//setting defaults
 	Conf.SetDefault("debug", true)
-	//TODO: importing config file
+	//Importing Config File
+	viper.SetConfigType("toml")
+	Conf.SetConfigName("config")
+	err := Conf.ReadInConfig()
+	if err != nil {
+		panic(fmt.Errorf("Fatal Error, Config File: %s \n", err))
+	}
 
 	//formatting the log
 	Log.Formatter = new(logrus.TextFormatter)

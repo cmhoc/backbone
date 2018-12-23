@@ -1,8 +1,8 @@
 package webserver
 
 import (
-	"discordbot/logging"
-	"discordbot/sql-interface"
+	"backbone/sql-interface"
+	"backbone/tools"
 	"encoding/json"
 	"net/http"
 )
@@ -23,7 +23,7 @@ func billsjson(w http.ResponseWriter, r *http.Request) {
 	// If there is an error, print it to the console, and return a server
 	// error response to the user
 	if err != nil {
-		logger.Log.Fatal("Error create bills as json")
+		tools.Log.Fatal("Error create bills as json")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
