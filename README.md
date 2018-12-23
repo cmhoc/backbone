@@ -1,7 +1,6 @@
 # CMHoC Automation and Web Server
 
 ![Version: 1.0](https://img.shields.io/badge/version-1.0-brightgreen.svg)
-[![Build Status](https://travis-ci.org/cmhoc/backbone.svg?branch=master)](https://travis-ci.org/cmhoc/backbone) 
 [![Go report](http://goreportcard.com/badge/cmhoc/backbone)](http://goreportcard.com/report/cmhoc/backbone)
 
 ---

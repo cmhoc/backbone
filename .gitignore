@@ -6,3 +6,5 @@ sensative\.info
 config\.toml
 
 reddit-interface/reddit\.agent
+
+google-interface/credentials\.json

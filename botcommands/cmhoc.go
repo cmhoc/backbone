@@ -2,6 +2,7 @@ package botcommands
 
 import (
 	"backbone/google-interface"
+	"backbone/reddit-interface"
 	"backbone/tools"
 	"github.com/bwmarrin/discordgo"
 	"strings"
@@ -197,8 +198,25 @@ func VoteCount(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		}
 
 		if hasRole {
-			//link := strings.Trim(message.Content, commandPrefix+"count")
-			//TODO: interfacing with GRAW
+			link := strings.Trim(message.Content, commandPrefix+"count ")
+
+			votes, billtitles, err := reddit.Count(link)
+			if err != nil {
+				tools.Log.WithField("Error", err).Debug("Error Counting Votes")
+				discord.ChannelMessageSend(message.ChannelID, "Error Counting Votes")
+				return
+			}
+
+			err = google.GoogleVotesUp(votes, billtitles)
+			if err != nil {
+				tools.Log.WithField("Error", err).Debug("Error Uploading Votes")
+				discord.ChannelMessageSend(message.ChannelID, "Error Uploading Votes")
+				return
+			}
+
+			tools.Log.WithField("Bills", billtitles).Info("Votes Counted")
+
+			discord.ChannelMessageSend(message.ChannelID, "Votes Counted")
 		}
 	}
 }

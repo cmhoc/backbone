@@ -1,9 +1,17 @@
+/*
+IMPORTANT NOTE READ IF CONSISTENT ERRORS
+The Google API creates Service accounts that act as the account for the bot thats using it,
+therefor if there are consistent errors with the spreadsheet not being found ensure that the service account
+the bot is using actually has access to the sheet.
+Email can be found on the google credentials site.
+*/
 package google
 
 import (
 	"backbone/tools"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"strings"
 )
 
 type Upload struct {
@@ -16,13 +24,12 @@ type Upload struct {
 	Meta      string //metadata in the format of Bot Submission: {{discord name}}
 }
 
+type placement struct {
+	member string //the member
+	row int //the row on the sheet
+}
+
 func GoogleBillUp(bill Upload) error {
-	/* IMPORTANT NOTE READ IF CONSISTENT ERRORS
-	The Google API creates Service accounts that act as the account for the bot thats using it,
-	therefor if there are consistent errors with the spreadsheet not being found ensure that the service account
-	the bot is using actually has access to the sheet.
-	Email can be found on the google credentials site.
-	*/
 	spreadsheet, err := sheet.FetchSpreadsheet(tools.Conf.GetString("legsubsheet"))
 	if err != nil {
 		return fmt.Errorf("spreadsheet not found")
@@ -60,6 +67,72 @@ func GoogleBillUp(bill Upload) error {
 		"Slot":      bill.Slot,
 		"Meta":      bill.Meta,
 	}).Info("Bill Submission")
+
+	return nil
+}
+
+func GoogleVotesUp(votes map[string]map[string]int, billtitles []string) error {
+	var (
+		place []placement
+		col int
+	)
+
+	spreadsheet, err := sheet.FetchSpreadsheet(tools.Conf.GetString("mainsheet"))
+	if err != nil {
+		return fmt.Errorf("spreadsheet not found")
+	}
+
+	workingSheet, err := spreadsheet.SheetByIndex(1) //Uses the second sheet
+	if err != nil {
+		return fmt.Errorf("sheet not found")
+	}
+
+	//finding the first col to input to
+	for i := 0; i < len(workingSheet.Columns); i++ {
+		if workingSheet.Columns[i][1].Value == "" {
+			col = i
+			break
+		}
+	}
+
+	//getting the placement of all the members on the sheet
+	for i := 2; i < len(workingSheet.Rows)-5; i++ {
+		place = append(place, placement{strings.ToLower(workingSheet.Rows[i][2].Value), i})
+	}
+
+	for y := 0; y < len(billtitles); y++ {
+		//getting the all the voters
+		var voters []string
+		for k := range votes[billtitles[y]] {
+			voters = append(voters, k)
+		}
+
+		//Putting the bill title on the top line
+		workingSheet.Update(1, col, billtitles[y])
+
+		//Finding the Voters and appending results
+		for j := 0; j < len(place); j++ {
+			for i := 0; i < len(voters); i++ {
+				if place[j].member == voters[i] {
+					if votes[billtitles[y]][voters[i]] == 0 {
+						//yea vote
+						workingSheet.Update(place[j].row, col, "Y // O")
+					} else if votes[billtitles[y]][voters[i]] == 1 {
+						//nay vote
+						workingSheet.Update(place[j].row, col, "N // N")
+					} else if votes[billtitles[y]][voters[i]] == 2 {
+						//abstention
+						workingSheet.Update(place[j].row, col, "A // A")
+					} else if votes[billtitles[y]][voters[i]] == 3 {
+						//Case when the bot cant determine the vote
+						workingSheet.Update(place[j].row, col, "Err")
+					}
+				}
+			}
+		}
+		workingSheet.Synchronize() //updating the spreadsheet
+		col++ //moving to the next column for the next bill
+	}
 
 	return nil
 }

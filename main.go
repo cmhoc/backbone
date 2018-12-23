@@ -13,7 +13,6 @@ package main
 import (
 	"backbone/botcommands"
 	"backbone/google-interface"
-	"backbone/reddit-interface"
 	"backbone/sql-interface"
 	"backbone/tools"
 	"backbone/webserver"
@@ -37,16 +36,6 @@ func main() {
 	} else {
 		tools.Log.Info("Google API services loaded.")
 	}
-
-	//Loading Reddit Auth
-	err = reddit.Auth()
-	if err != nil {
-		tools.Log.Debug("Error Identified with Reddit Authentication, all related functions will not work.")
-	} else {
-		tools.Log.Info("Reddit API Services loaded")
-	}
-
-	reddit.Count("https://www.reddit.com/r/cmhocvote/comments/9w65ny/1st_parl_2nd_session_house_vote_m7a1_m10/")
 
 	//Followings is all for the discord bot
 	discord, err := discordgo.New("Bot " + botcommands.Bottoken)
