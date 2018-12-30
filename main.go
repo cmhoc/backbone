@@ -2,7 +2,6 @@
 Initially as a test for discordgo, this test has grown into the main backbone for
 cmhocs automation process and controls the majority if not the entirety. Because all streams of the automation are
 connected, much of it can be accessed and adjusted through the discord bot or the website.
-For detailed documentation please view the readme's in each directory.
 Sensitive information has been omitted from the public release.
 Author: /u/thehowlinggreywolf
 Contact @: verielthewolf@gmail.com
@@ -17,7 +16,6 @@ import (
 	"backbone/tools"
 	"backbone/webserver"
 	"github.com/bwmarrin/discordgo"
-	"github.com/gorilla/handlers"
 	"net/http"
 )
 
@@ -43,7 +41,7 @@ func main() {
 		tools.Log.Panic("Could not create discord bot")
 	}
 	//loading the bot functions as a goroutine
-	go bothandler(discord)
+	//go bothandler(discord)
 	//opening the connection to discord
 	err = discord.Open()
 	if err != nil {
@@ -59,20 +57,17 @@ func main() {
 
 	//The following is code for the webserver
 	//Open the webserver
-	staticFileDirectory := http.Dir("./webserver/static/")
-	staticFileHandler := http.StripPrefix("/", http.FileServer(staticFileDirectory))
-	http.Handle("/", staticFileHandler)
-	err = http.ListenAndServe(":"+tools.Conf.GetString("wport"), handlers.LoggingHandler(tools.Log.Out, &myHandler{}))
+	err = webserving()
 	//closes the program if it fails to create the server
 	if err != nil {
-		tools.Log.Fatal("Could not create webserver")
+		tools.Log.WithField("Error", err).Fatal("Error Creating Webserver")
 	}
 }
 
+//adds all the handlers to the bot
 func bothandler(discord *discordgo.Session) {
-	//adding the commands to the discord bot
 	discord.AddHandler(botcommands.Messagelog) //This just outputs messages sent to the log. Used to debug
-	//discord.AddHandler(botcommands.Emmaserver)
+	discord.AddHandler(botcommands.Emmaserver)
 	discord.AddHandler(botcommands.Hereboy)
 	discord.AddHandler(botcommands.Pet)
 	discord.AddHandler(botcommands.Flag)
@@ -100,11 +95,24 @@ func bothandler(discord *discordgo.Session) {
 	tools.Log.Info("Discord Functions Loaded")
 }
 
-type myHandler struct{}
+//launches the webserver
+func webserving() error {
 
-func (*myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if h, err := webserver.Handlers[r.URL.String()]; err {
-		h(w, r)
-		return
+	//creating a webserver
+	mux := http.NewServeMux()
+
+	//static file serving
+	staticFileDirectory := http.Dir(tools.Conf.GetString("wfiles"))
+	staticFileHandler := http.StripPrefix("/", http.FileServer(staticFileDirectory))
+	mux.Handle("/", staticFileHandler)
+
+	//handler scripts
+	mux.HandleFunc("/api/billdata", webserver.Billsjson)
+
+	err := http.ListenAndServe(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), webserver.Logging(mux))
+	if err != nil {
+		return err
 	}
+
+	return nil
 }

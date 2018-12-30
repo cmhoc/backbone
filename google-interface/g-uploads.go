@@ -26,7 +26,7 @@ type Upload struct {
 
 type placement struct {
 	member string //the member
-	row int //the row on the sheet
+	row    int    //the row on the sheet
 }
 
 func GoogleBillUp(bill Upload) error {
@@ -74,7 +74,7 @@ func GoogleBillUp(bill Upload) error {
 func GoogleVotesUp(votes map[string]map[string]int, billtitles []string) error {
 	var (
 		place []placement
-		col int
+		col   int
 	)
 
 	spreadsheet, err := sheet.FetchSpreadsheet(tools.Conf.GetString("mainsheet"))
@@ -131,7 +131,7 @@ func GoogleVotesUp(votes map[string]map[string]int, billtitles []string) error {
 			}
 		}
 		workingSheet.Synchronize() //updating the spreadsheet
-		col++ //moving to the next column for the next bill
+		col++                      //moving to the next column for the next bill
 	}
 
 	return nil

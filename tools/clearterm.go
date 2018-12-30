@@ -18,6 +18,8 @@ func init() {
 		temp.Stdout = os.Stdout
 		temp.Run()
 	}
+
+	//TODO: Create the linux clear term commands
 }
 
 func clearScreen() {
@@ -26,14 +28,16 @@ func clearScreen() {
 		temp()
 	} else {
 		Log.Debug("Current Platform Not Supported! Contact the author if this is an error.")
+		return
 	}
 }
 
 func ClearLoop() { //Note: Always run on goroutine
 	//infinite loop
 	for true {
-		if prevClearTime.AddDate(0, 0, Conf.GetInt("time")).Day() <= time.Now().Day() {
+		if prevClearTime.AddDate(0, 0, Conf.GetInt("time")).Unix() < time.Now().Unix() {
 			clearScreen()
+			prevClearTime = time.Now()
 			Log.WithField("Time", time.Now()).Trace("Cleared Terminal")
 		}
 	}

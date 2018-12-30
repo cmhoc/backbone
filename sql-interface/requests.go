@@ -12,21 +12,20 @@ type Bill struct {
 	BillSlot   string `json:"billslot"`
 	Author     string `json:"author"`
 	Sponsor    string `json:"sponsor"`
-	Parliament string `json:"parliament"`
+	Parliament int    `json:"parliament"`
 }
 
-var Bills = make(map[int]Bill)
+var Bills []Bill
 
-func Billsr(db *sql.DB) map[int]Bill {
+func Billsr(db *sql.DB) []Bill {
 	var (
 		BillId     string
 		BillName   string
 		BillSlot   string
 		Author     string
 		Sponsor    string
-		Parliament string
+		Parliament int
 	)
-	i := 0
 	rows, err := db.Query("SELECT * FROM bill_info;")
 	if err == sql.ErrNoRows {
 		tools.Log.Error("No Rows were Returned - Bills")
@@ -45,10 +44,10 @@ func Billsr(db *sql.DB) map[int]Bill {
 			"Sponsor":  Sponsor,
 			"Parl":     Parliament,
 		}).Trace("Bills Scanned")
-		Bills[i] = Bill{
+		temp := Bill{
 			BillId, BillName, BillSlot, Author, Sponsor, Parliament,
 		}
-		i += 1
+		Bills = append(Bills, temp)
 	}
 	return Bills
 }
