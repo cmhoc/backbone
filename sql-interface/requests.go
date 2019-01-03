@@ -18,6 +18,9 @@ type Bill struct {
 var Bills []Bill
 
 func Billsr(db *sql.DB) []Bill {
+	//reseting the bills var
+	Bills = nil
+
 	var (
 		BillId     string
 		BillName   string
@@ -29,9 +32,10 @@ func Billsr(db *sql.DB) []Bill {
 	rows, err := db.Query("SELECT * FROM bill_info;")
 	if err == sql.ErrNoRows {
 		tools.Log.Error("No Rows were Returned - Bills")
-	}
-	if err != nil {
-		tools.Log.Panic("Could not load SQL Bill Data")
+		return nil
+	} else if err != nil {
+		tools.Log.Error("Could not load SQL Bill Data")
+		return nil
 	}
 	defer rows.Close()
 	for rows.Next() {

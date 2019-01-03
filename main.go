@@ -23,9 +23,9 @@ func main() {
 	//connecting to the database
 	db := database.Login()
 	db.Begin()
-	//pulling bill data
-	bills := database.Billsr(db)
-	tools.Log.WithField("Bill", bills).Info("Bills Loaded")
+
+	//Loading the Automatic Updater
+	go database.DBUpdating(db)
 
 	//Loading google Authentication
 	err := google.GoogleAuth()
@@ -41,7 +41,11 @@ func main() {
 		tools.Log.Panic("Could not create discord bot")
 	}
 	//loading the bot functions as a goroutine
-	//go bothandler(discord)
+	if tools.Conf.GetBool("discord") {
+		go bothandler(discord)
+	} else {
+		tools.Log.Info("Discord Functions not Loaded")
+	}
 	//opening the connection to discord
 	err = discord.Open()
 	if err != nil {
@@ -107,7 +111,11 @@ func webserving() error {
 	mux.Handle("/", staticFileHandler)
 
 	//handler scripts
+	//api scripts
 	mux.HandleFunc("/api/billdata", webserver.Billsjson)
+	//auth scripts
+	mux.HandleFunc("/auth/user", webserver.AuthSend)
+	mux.HandleFunc("/auth/return", webserver.ReturnParse)
 
 	err := http.ListenAndServe(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), webserver.Logging(mux))
 	if err != nil {

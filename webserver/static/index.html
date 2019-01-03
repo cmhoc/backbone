@@ -7,25 +7,49 @@
     <title>CMHoC</title>
 </head>
 <body>
-    <h1 class="primary-header">CMHoC's Official Webserver</h1>
+    <h1 class="primary-header">CMHoC's Official Website</h1>
     <div class="navbar">
         <a href="/">Home</a>
         <div class="dropdown">
-            <button class="dropbtn">Sheets</button>
-            <div class="dropdown-content">
+            <button class="dropbtn" onclick="Dropdown()">Sheets
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="myDropdown">
                 <a href="billsheet.html">Bills</a>
+                <a href="#Votesheet">Votes</a>
+                <a href="#Parties">Parties</a>
             </div>
         </div>
-        <a href="#devAPI">API</a>
+        <a href="apidesc.html">API</a>
     </div>
+
+    <script>
+        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
+        function Dropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(e) {
+            if (!e.target.matches('.dropbtn')) {
+                var myDropdown = document.getElementById("myDropdown");
+                if (myDropdown.classList.contains('show')) {
+                    myDropdown.classList.remove('show');
+                }
+            }
+        }
+    </script>
 
     <!-- Everything above this is the top of the page and should be on every page in the site -->
 
-    <p>
+    <p class="main-body">
         This has been created as an online access portal to the main automation present in the discord bot, which
         coincidentally this also runs on. The entirety of the site is currently experimental, so proceed with caution.
     </p>
-    <p>
+
+    <a href="/auth/user" class="main-body">If you are a member of CMHoC please authenticate yourself here.</a>
+
+    <p class="secondary-body">
         Please Note: The sheets and the API have yet to be completed and are also not fully updated
     </p>
 </body>

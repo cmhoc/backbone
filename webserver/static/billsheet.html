@@ -15,15 +15,34 @@
 <div class="navbar">
     <a href="/">Home</a>
     <div class="dropdown">
-        <button class="dropbtn">Sheets</button>
-        <div class="dropdown-content">
+        <button class="dropbtn" onclick="Dropdown()">Sheets
+            <i class="fa fa-caret-down"></i>
+        </button>
+        <div class="dropdown-content" id="myDropdown">
             <a href="billsheet.html">Bills</a>
+            <a href="#Votesheet">Votes</a>
+            <a href="#Parties">Parties</a>
         </div>
     </div>
-    <a href="#devAPI">API</a>
+    <a href="apidesc.html">API</a>
 </div>
 
-    <br>
+<script>
+    /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
+    function Dropdown() {
+        document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(e) {
+        if (!e.target.matches('.dropbtn')) {
+            var myDropdown = document.getElementById("myDropdown");
+            if (myDropdown.classList.contains('show')) {
+                myDropdown.classList.remove('show');
+            }
+        }
+    }
+</script>
 
     <div id="bill-table"></div>
         <script type="text/javascript" src="dynamic/JavaScript/tabulator/tabulator_core.min.js"></script>

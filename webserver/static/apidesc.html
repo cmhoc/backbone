@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="thehowlinggreywolf">
+    <link href="dynamic/CSS/primarystyle.css" rel="stylesheet">
+    <title>CMHoC API</title>
+</head>
+<body>
+    <h1 class="primary-header">Website API</h1>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn" onclick="Dropdown()">Sheets
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content" id="myDropdown">
+                <a href="billsheet.html">Bills</a>
+                <a href="#Votesheet">Votes</a>
+                <a href="#Parties">Parties</a>
+            </div>
+        </div>
+        <a href="apidesc.html">API</a>
+    </div>
+
+    <script>
+        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
+        function Dropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(e) {
+            if (!e.target.matches('.dropbtn')) {
+                var myDropdown = document.getElementById("myDropdown");
+                if (myDropdown.classList.contains('show')) {
+                    myDropdown.classList.remove('show');
+                }
+            }
+        }
+    </script>
+
+    <p class="main-body">
+        All of the data presented on this site is done so by loading the data from SQL into the Golang program running
+        this server and then uploading the data to different pages in the form of JSON. This JSON is then used by JavaScript
+        and runs the various parts of this site. In doing so it is also possible to make personal applications using the same
+        data. I have provided API supported for a few programming languages that I will maintain, and these will allow you to
+        easily play with the data. Other languages main gain support later, or they may never. The best way to find out
+        is to ask me directly. I have also provided here links to each page that presents JSON data so you may create your
+        own API wrapper should you so choose. Take note however, that I will not continue to support and host old API versions
+        should it change.
+    </p>
+
+        <p class="secondary-body" style="width: 400px">The Following are officially maintained API Wrappers</p>
+
+        <pre class="code-block"><code style="font-family: Helvetica, Serif;">
+            Golang: Not yet available
+            Python: Not yet available
+            R: Not yet available
+        </code></pre>
+
+            <p class="secondary-body" style="width: 400px">The Following are links to all the pages hosting JSON data</p>
+
+            <pre class="code-block"><code style="font-family: Helvetica, Serif;">
+                <a href="/api/billdata">Bill Data</a>
+            </code></pre>
+</body>
+<footer class="site-footer">
+    Created and Maintained by /u/thehowlinggreywolf <br>
+    HTML, CSS, and JS are not my primary programming languages so please forgive the sites aesthetics
+</footer>
+</html>

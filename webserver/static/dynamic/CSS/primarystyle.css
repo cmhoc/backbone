@@ -1,3 +1,5 @@
+/* TODO: Create a .min version for use on the webserver */
+
 /* Navbar container */
 .navbar {
     overflow: hidden;
@@ -23,18 +25,19 @@
 
 /* Dropdown button */
 .dropdown .dropbtn {
+    cursor: pointer;
     font-size: 16px;
     border: none;
     outline: none;
     color: white;
     padding: 14px 16px;
     background-color: inherit;
-    font-family: inherit; /* Important for vertical align on mobile phones */
-    margin: 0; /* Important for vertical align on mobile phones */
+    font-family: inherit;
+    margin: 0;
 }
 
 /* Add a red background color to navbar links on hover */
-.navbar a:hover, .dropdown:hover .dropbtn {
+.navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
     background-color: red;
 }
 
@@ -45,7 +48,7 @@
     background-color: #f9f9f9;
     min-width: 82px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 0;
+    z-index: 1;
 }
 
 /* Links inside the dropdown */
@@ -63,19 +66,21 @@
     background-color: #ddd;
 }
 
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
+/* Toggling the Dropdown Display */
+.show {
     display: block;
 }
 
 /* Footer Customisation */
 .site-footer {
+    position: relative;
     font-size: 12px;
     text-align: center;
     color: #f9f9f9;
     background-color: #333;
     padding-top: 5px;
     padding-bottom: 5px;
+    font-family: Helvetica, Serif;
 }
 
 /* Primary Header */
@@ -84,4 +89,37 @@
     font-family: Helvetica, Serif;
     color: #333;
     outline-color: #f9f9f9;
+}
+
+/* Primary Body Text */
+.main-body {
+    font-family: Helvetica, Serif;
+    color: #333;
+    margin: 15px;
+    line-height: 1.5;
+}
+
+/* Secondary Body Text */
+.secondary-body {
+    font-family: Helvetica, Serif;
+    color: #333;
+    font-size: 12px;
+}
+
+/* Specialized format for the 'code' blocks */
+.code-block {
+    background-color: #333;
+    color: #f9f9f9;
+    font-size: 14px;
+    width: 350px;
+}
+
+.code-block a {
+    color: inherit;
+    font-size: inherit;
+    text-decoration: none;
+}
+
+.code-block a:hover {
+    background: red;
 }
