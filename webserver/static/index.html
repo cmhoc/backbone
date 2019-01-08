@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="thehowlinggreywolf">
     <link href="dynamic/CSS/primarystyle.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
     <title>CMHoC</title>
 </head>
 <body>
@@ -12,12 +13,19 @@
         <a href="/">Home</a>
         <div class="dropdown">
             <button class="dropbtn" onclick="Dropdown()">Sheets
-                <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
-                <a href="billsheet.html">Bills</a>
-                <a href="#Votesheet">Votes</a>
-                <a href="#Parties">Parties</a>
+                <a href="sheets/billsheet.html">Bills</a>
+                <a href="sheets/votesheet.html">Votes</a>
+                <a href="sheets/partysheet.html">Parties</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn" onclick="Dropdown2()">Meta
+            </button>
+            <div class="dropdown-content" id="myDropdown2">
+                <a href="meta/ccr.html">CCR</a>
+                <a href="meta/const.html">Constitution</a>
             </div>
         </div>
         <a href="apidesc.html">API</a>
@@ -38,6 +46,20 @@
                 }
             }
         }
+
+        function Dropdown2() {
+            document.getElementById("myDropdown2").classList.toggle("show");
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(a) {
+            if (!a.target.matches('.dropbtn')) {
+                var myDropdown = document.getElementById("myDropdown2");
+                if (myDropdown.classList.contains('show')) {
+                    myDropdown.classList.remove('show');
+                }
+            }
+        }
     </script>
 
     <!-- Everything above this is the top of the page and should be on every page in the site -->
@@ -48,6 +70,8 @@
     </p>
 
     <a href="/auth/user" class="main-body">If you are a member of CMHoC please authenticate yourself here.</a>
+
+    <p class="main-body">Bonjour! Parlez-vous français et êtes-vous prêt à aider à traduire ce site? J'aimerais avoir une version entièrement traduite de ce site pour la consommation, mais j'aurai besoin d'aide pour cela. Veuillez me contacter si vous êtes intéressé.</p>
 
     <p class="secondary-body">
         Please Note: The sheets and the API have yet to be completed and are also not fully updated

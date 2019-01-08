@@ -22,13 +22,22 @@ import (
 func main() {
 	//connecting to the database
 	db := database.Login()
-	db.Begin()
+	_, err := db.Begin()
+	if err != nil {
+		tools.Log.WithField("Error", err).Debug("Error Loading Database")
+	}
 
 	//Loading the Automatic Updater
 	go database.DBUpdating(db)
 
+	//Initial Updates
+	err = database.ForceUpdate(db)
+	if err != nil {
+		tools.Log.WithField("Error", err).Debug("Could Not Update SQL based vars")
+	}
+
 	//Loading google Authentication
-	err := google.GoogleAuth()
+	err = google.GoogleAuth()
 	if err != nil {
 		tools.Log.Debug("Error Identified with Google Authentication, all related functions will not work.")
 	} else {
@@ -88,7 +97,7 @@ func bothandler(discord *discordgo.Session) {
 	discord.AddHandler(botcommands.BillSub)
 	discord.AddHandler(botcommands.VoteCount)
 	discord.AddHandler(func(discord *discordgo.Session, ready *discordgo.Ready) {
-		err := discord.UpdateStatus(0, "Use ./help if youre stuck!")
+		err := discord.UpdateStatus(0, "Visit cmhoc.com!")
 		if err != nil {
 			tools.Log.Debug("Error Setting Discord Status")
 		}
@@ -113,6 +122,8 @@ func webserving() error {
 	//handler scripts
 	//api scripts
 	mux.HandleFunc("/api/billdata", webserver.Billsjson)
+	mux.HandleFunc("/api/partydata", webserver.Partyjson)
+	mux.HandleFunc("/api/votedata", webserver.Votejson)
 	//auth scripts
 	mux.HandleFunc("/auth/user", webserver.AuthSend)
 	mux.HandleFunc("/auth/return", webserver.ReturnParse)

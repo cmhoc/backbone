@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="thehowlinggreywolf">
     <link href="dynamic/CSS/primarystyle.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
     <title>CMHoC API</title>
 </head>
 <body>
@@ -12,33 +13,54 @@
         <a href="/">Home</a>
         <div class="dropdown">
             <button class="dropbtn" onclick="Dropdown()">Sheets
-                <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content" id="myDropdown">
-                <a href="billsheet.html">Bills</a>
-                <a href="#Votesheet">Votes</a>
-                <a href="#Parties">Parties</a>
+                <a href="sheets/billsheet.html">Bills</a>
+                <a href="sheets/votesheet.html">Votes</a>
+                <a href="sheets/partysheet.html">Parties</a>
             </div>
         </div>
-        <a href="apidesc.html">API</a>
-    </div>
+            <div class="dropdown">
+                <button class="dropbtn" onclick="Dropdown2()">Meta
+                </button>
+                <div class="dropdown-content" id="myDropdown2">
+                    <a href="meta/ccr.html">CCR</a>
+                    <a href="meta/const.html">Constitution</a>
+                </div>
+            </div>
+            <a href="apidesc.html">API</a>
+        </div>
 
-    <script>
-        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
-        function Dropdown() {
-            document.getElementById("myDropdown").classList.toggle("show");
-        }
+        <script>
+            /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
+            function Dropdown() {
+                document.getElementById("myDropdown").classList.toggle("show");
+            }
 
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(e) {
-            if (!e.target.matches('.dropbtn')) {
-                var myDropdown = document.getElementById("myDropdown");
-                if (myDropdown.classList.contains('show')) {
-                    myDropdown.classList.remove('show');
+            // Close the dropdown if the user clicks outside of it
+            window.onclick = function(e) {
+                if (!e.target.matches('.dropbtn')) {
+                    var myDropdown = document.getElementById("myDropdown");
+                    if (myDropdown.classList.contains('show')) {
+                        myDropdown.classList.remove('show');
+                    }
                 }
             }
-        }
-    </script>
+
+            function Dropdown2() {
+                document.getElementById("myDropdown2").classList.toggle("show");
+            }
+
+            // Close the dropdown if the user clicks outside of it
+            window.onclick = function(a) {
+                if (!a.target.matches('.dropbtn')) {
+                    var myDropdown = document.getElementById("myDropdown2");
+                    if (myDropdown.classList.contains('show')) {
+                        myDropdown.classList.remove('show');
+                    }
+                }
+            }
+        </script>
 
     <p class="main-body">
         All of the data presented on this site is done so by loading the data from SQL into the Golang program running
@@ -63,6 +85,8 @@
 
             <pre class="code-block"><code style="font-family: Helvetica, Serif;">
                 <a href="/api/billdata">Bill Data</a>
+                <a href="/api/partydata">Party Data</a>
+                <a href="/api/votedata">Vote Data</a>
             </code></pre>
 </body>
 <footer class="site-footer">

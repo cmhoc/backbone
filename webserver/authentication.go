@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	state string //state given to reddit
+	state       string //state given to reddit
 	returnstate string //state returned from reddit
-	code string //onetime use code reddit gives us to exchange for a bearer token
+	code        string //onetime use code reddit gives us to exchange for a bearer token
 )
 
 //the HTTP handler for authentication sending
@@ -36,13 +36,14 @@ func authLink() (string, error) {
 	var (
 		state = hex.EncodeToString(h.Sum(nil)) //state for ensuring returned tokens are valid
 		//link to the authorisation page
-		authcon = "https://www.reddit.com/api/v1/authorize.compact?" + //the compact version is being used to make it more mobile friendly
-		tools.Conf.GetString("redditclient") + "=CLIENT_ID&" +
-		"response_type" + "=TYPE&" +
-		state + "=RANDOM_STRING&" +
-		tools.Conf.GetString("redirectURI") + "=URI&" +
-		"permanent" + "=DURATION&" +
-		"identity" + "=SCOPE_STRING"
+		//the compact version is being used to make it more mobile friendly
+		authcon = "https://www.reddit.com/api/v1/authorize.compact?" +
+			"client_id=" + tools.Conf.GetString("redditclient") +
+			"&response_type=" + "code" +
+			"&state=" + state +
+			"&redirect_uri=" + tools.Conf.GetString("redirectURI") +
+			"&duration=" + "permanent" +
+			"&scope=" + "identity"
 	)
 
 	return authcon, nil
@@ -78,20 +79,21 @@ func ReturnParse(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//redirecting to the home page if parsed correctly
-	http.Redirect(w, r, "cmhoc.ca", http.StatusOK)
+	http.Redirect(w, r, "cmhoc.com", http.StatusOK)
 }
 
-
 //ensuring the return state is correct
-func stateCheck(returnstate string, state string) (bool) {
+func stateCheck(returnstate string, state string) bool {
 	return returnstate == state
 }
 
+//TODO: Finish retrieving the access token
 //retriveing access token
+/*
 func retriveToken() (error) {
 	var data = "grant_type" + "=authorization_code&" +
 		code + "=CODE&" +
 		tools.Conf.GetString("redirectURI") + "=URI"
 
 	return nil
-}
+} */

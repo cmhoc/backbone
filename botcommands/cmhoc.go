@@ -12,7 +12,7 @@ import (
 var roles map[string]string //saving the CMHoC roles into a map
 
 func init() {
-	//loading importan roles into the map
+	//loading important roles into the map
 	roles = make(map[string]string)
 	roles["headmod"] = "172225589355216896"
 	roles["admin"] = "475144656024240138"
@@ -185,6 +185,7 @@ func BillSub(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 }
 
+//TODO: Setup a way to check DNV's
 func VoteCount(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	if strings.HasPrefix(message.Content, commandPrefix+"count") {
 

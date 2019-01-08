@@ -4,7 +4,7 @@
 .navbar {
     overflow: hidden;
     background-color: #333;
-    font-family: Helvetica, Serif;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
 }
 
 /* Links inside the navbar */
@@ -80,20 +80,27 @@
     background-color: #333;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-family: Helvetica, Serif;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
 }
 
 /* Primary Header */
 .primary-header {
     font-size: 34px;
-    font-family: Helvetica, Serif;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
     color: #333;
     outline-color: #f9f9f9;
 }
 
+/* Sub Headers */
+.sub-header {
+    font-size: 21px;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+    color: #333;
+}
+
 /* Primary Body Text */
 .main-body {
-    font-family: Helvetica, Serif;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
     color: #333;
     margin: 15px;
     line-height: 1.5;
@@ -101,9 +108,10 @@
 
 /* Secondary Body Text */
 .secondary-body {
-    font-family: Helvetica, Serif;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
     color: #333;
     font-size: 12px;
+    margin: 15px;
 }
 
 /* Specialized format for the 'code' blocks */

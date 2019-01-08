@@ -8,3 +8,9 @@ config\.toml
 reddit-interface/reddit\.agent
 
 google-interface/credentials\.json
+
+\.idea/
+
+webserver/static/dynamic/CSS/tabulator/
+
+webserver/static/dynamic/JavaScript/

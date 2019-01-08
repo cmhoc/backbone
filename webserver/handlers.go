@@ -39,11 +39,39 @@ func Billsjson(w http.ResponseWriter, r *http.Request) {
 	// If there is an error, print it to the console, and return a server
 	// error response to the user
 	if err != nil {
-		tools.Log.Fatal("Error create bills as json")
+		tools.Log.Fatal("Error creating bills as json")
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 	//write the bills list
 	w.Write(billsjson)
+}
+
+func Votejson(w http.ResponseWriter, r *http.Request) {
+	//TODO: Finish Vote json
+}
+
+func Partyjson(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json") //setting the content type
+	w.Header().Set("X-Frame-Options", "SAMEORIGIN")    //Allowing frame to be loaded from the origin
+	w.Header().Set("Connection", "Keep-Alive")         //setting the connection type
+	//setting keep alive settings
+	w.Header().Set("Keep-Alive", "timeout=5")
+	w.Header().Add("Keep-Alive", "max=100")
+
+	//Convert the bills to json
+	partyjson, err := json.Marshal(database.Parties)
+
+	// If there is an error, print it to the console, and return a server
+	// error response to the user
+	if err != nil {
+		tools.Log.Fatal("Error creating parties as json")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	//write the bills list
+	w.Write(partyjson)
 }

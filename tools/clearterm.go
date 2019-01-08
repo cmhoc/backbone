@@ -13,13 +13,18 @@ var prevClearTime time.Time //The last time it was cleared
 func init() {
 	prevClearTime = time.Now()
 	clear = make(map[string]func())
+
 	clear["windows"] = func() {
 		temp := exec.Command("cmd", "/c", "cls")
 		temp.Stdout = os.Stdout
 		temp.Run()
 	}
 
-	//TODO: Create the linux clear term commands
+	clear["linux"] = func() {
+		cmd := exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
 }
 
 func clearScreen() {
@@ -27,7 +32,7 @@ func clearScreen() {
 	if ok {
 		temp()
 	} else {
-		Log.Debug("Current Platform Not Supported! Contact the author if this is an error.")
+		Log.Debug("Current Platform Not Supported! Contact thehowlinggreywolf if this is an error.")
 		return
 	}
 }
