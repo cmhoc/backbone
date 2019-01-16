@@ -48,7 +48,11 @@ func Help(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	}
 
 	if message.Content == "./help" {
-		discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+		_, err := discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Unusual Error")
+			return
+		}
 	}
 }
 
@@ -75,7 +79,11 @@ func Cmhochelp(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		for i := 0; i < len(server.Channels); i++ {
 			temp = server.Channels[i].ID
 			if message.ChannelID == temp {
-				discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+				_, err := discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 			}
 		}
 	}

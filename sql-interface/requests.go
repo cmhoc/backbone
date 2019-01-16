@@ -34,6 +34,7 @@ type (
 		Vote       string `json:"vote" db:"vote"`
 		Parliament int    `json:"parliament" db:"parliament"`
 	}
+
 )
 
 var (
@@ -43,6 +44,7 @@ var (
 )
 
 func Billsr(db *sqlx.DB) error {
+	Bills = nil
 
 	err := db.Select(&Bills, "SELECT * FROM bill_info")
 	if err != nil {
@@ -55,6 +57,7 @@ func Billsr(db *sqlx.DB) error {
 }
 
 func Partiesr(db *sqlx.DB) error {
+	Parties = nil
 
 	err := db.Select(&Parties, "SELECT * FROM parties")
 	if err != nil {
@@ -67,8 +70,9 @@ func Partiesr(db *sqlx.DB) error {
 }
 
 func Votesr(db *sqlx.DB) error {
+	Votes = nil
 
-	err := db.Select(&Parties, "SELECT * FROM votes")
+	err := db.Select(&Votes, "SELECT * FROM votes")
 	if err != nil {
 		return err
 	}
@@ -76,4 +80,21 @@ func Votesr(db *sqlx.DB) error {
 	tools.Log.WithField("#", len(Votes)).Trace("Votes Loaded")
 
 	return nil
+}
+
+func AggrVotes() (map[string]map[string]string, error) {
+
+	votes := make(map[string]map[string]string)
+
+	for i := 0; i < len(Votes); i++ {
+		//making the map if nil
+		if votes[Votes[i].Member] == nil {
+			votes[Votes[i].Member] = make(map[string]string)
+		}
+
+		votes[Votes[i].Member][Votes[i].Bill] = Votes[i].Vote
+
+	}
+
+	return votes, nil
 }

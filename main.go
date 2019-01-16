@@ -61,7 +61,13 @@ func main() {
 		tools.Log.Panic("Error Connecting to Discord")
 	}
 	//stops the discord connection from closing until the main script is finished running
-	defer discord.Close()
+	defer func() {
+		err := discord.Close()
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Error Closing Discord")
+			return
+		}
+	}()
 
 	//Turning on the clear terminal loop if debug mode is on
 	if tools.Conf.GetBool("debug") {
@@ -126,11 +132,13 @@ func webserving() error {
 	mux.HandleFunc("/api/votedata", webserver.Votejson)
 	//auth scripts
 	mux.HandleFunc("/auth/user", webserver.AuthSend)
-	mux.HandleFunc("/auth/return", webserver.ReturnParse)
 
-	err := http.ListenAndServe(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), webserver.Logging(mux))
+	err := http.ListenAndServeTLS(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"),tools.Conf.GetString("wcert"),
+		tools.Conf.GetString("wkey"),webserver.Logging(mux))
 	if err != nil {
-		return err
+		tools.Log.Debug("Error in TLS Serving, Serving Without.")
+		err = http.ListenAndServe(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), webserver.Logging(mux))
+		if err != nil {return err}
 	}
 
 	return nil

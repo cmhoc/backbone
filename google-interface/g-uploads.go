@@ -21,7 +21,7 @@ type Upload struct {
 	Link      string //Link to the bill or motion
 	Type      string //Bill or Motion
 	Slot      string //The slot it's using (Gov, Specific party, ect)
-	Meta      string //metadata in the format of Bot Submission: {{discord name}}
+	Meta      string //metadata in the format of Bot Submission: {{.discord name}}
 }
 
 type placement struct {
@@ -43,8 +43,14 @@ func GoogleBillUp(bill Upload) error {
 	rows := len(workingSheet.Rows)
 	cols := 7
 	//adding an extra row
-	sheet.ExpandSheet(workingSheet, uint(rows+1), uint(cols))
-	workingSheet.Synchronize() //ensuring we're working with our new expanded sheet
+	err = sheet.ExpandSheet(workingSheet, uint(rows+1), uint(cols))
+	if err != nil {
+		return fmt.Errorf("sheet could not be expanded")
+	}
+	err = workingSheet.Synchronize() //ensuring we're working with our new expanded sheet
+	if err != nil {
+		return fmt.Errorf("sheet could not be synced")
+	}
 
 	//adding the data to the new row
 	workingSheet.Update(rows, 0, bill.Timestamp)
@@ -56,7 +62,10 @@ func GoogleBillUp(bill Upload) error {
 	workingSheet.Update(rows, 6, bill.Meta)
 
 	//a final update for good measure
-	workingSheet.Synchronize()
+	err = workingSheet.Synchronize()
+	if err != nil {
+		return fmt.Errorf("sheet could not be synced")
+	}
 
 	//log the submission
 	tools.Log.WithFields(logrus.Fields{
@@ -130,7 +139,10 @@ func GoogleVotesUp(votes map[string]map[string]int, billtitles []string) error {
 				}
 			}
 		}
-		workingSheet.Synchronize() //updating the spreadsheet
+		err = workingSheet.Synchronize() //updating the spreadsheet
+		if err != nil {
+			return fmt.Errorf("sheet could not be synced")
+		}
 		col++                      //moving to the next column for the next bill
 	}
 

@@ -33,5 +33,5 @@ func Login() *sqlx.DB {
 	}
 
 	tools.Log.Info("Database Logged In")
-	return db.Unsafe()
+	return db
 }

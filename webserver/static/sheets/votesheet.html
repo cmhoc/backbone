@@ -10,83 +10,46 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
 
     <title>CMHoC Master Sheet</title>
-</head>
-<body>
-<h1 class="primary-header">Bill Sheet</h1>
-<div class="navbar">
-    <a href="/">Home</a>
-    <div class="dropdown">
-        <button class="dropbtn" onclick="Dropdown()">Sheets
-            <i class="fa fa-caret-down"></i>
-        </button>
-        <div class="dropdown-content" id="myDropdown">
-            <a href="billsheet.html">Bills</a>
-            <a href="votesheet.html">Votes</a>
-            <a href="partysheet.html">Parties</a>
-        </div>
-    </div>
-        <div class="dropdown">
-            <button class="dropbtn" onclick="Dropdown2()">Meta
-            </button>
-            <div class="dropdown-content" id="myDropdown2">
-                <a href="../meta/ccr.html">CCR</a>
-                <a href="../meta/const.html">Constitution</a>
-            </div>
-        </div>
-        <a href="../apidesc.html">API</a>
-    </div>
 
+    <script src="../dynamic/JavaScript/jquery-3.3.1.min.js"></script>
     <script>
-        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
-        function Dropdown() {
-            document.getElementById("myDropdown").classList.toggle("show");
-        }
-
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(e) {
-            if (!e.target.matches('.dropbtn')) {
-                var myDropdown = document.getElementById("myDropdown");
-                if (myDropdown.classList.contains('show')) {
-                    myDropdown.classList.remove('show');
-                }
-            }
-        }
-
-        function Dropdown2() {
-            document.getElementById("myDropdown2").classList.toggle("show");
-        }
-
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(a) {
-            if (!a.target.matches('.dropbtn')) {
-                var myDropdown = document.getElementById("myDropdown2");
-                if (myDropdown.classList.contains('show')) {
-                    myDropdown.classList.remove('show');
-                }
-            }
-        }
+        $(function(){
+            $("#includedContent").load("../navbar.html");
+        });
     </script>
 
-    <div id="bill-table"></div>
+</head>
+<body>
+<h1 class="primary-header">Vote Sheet</h1>
+
+<div id="includedContent"></div>
+
+    <div id="vote-table"></div>
         <script type="text/javascript" src="../dynamic/JavaScript/tabulator/tabulator_core.min.js"></script>
         <script type="text/javascript" src="../dynamic/JavaScript/tabulator/modules/format.min.js"></script>
         <script type="text/javascript" src="../dynamic/JavaScript/tabulator/modules/ajax.min.js"></script>
         <script type="text/javascript" src="../dynamic/JavaScript/jquery-3.3.1.min.js"></script>
+        <script type="text/javascript" src="../dynamic/JavaScript/tabulator/modules/group_rows.min.js"></script>
+        <script type="text/javascript" src="../dynamic/JavaScript/tabulator/modules/sort.min.js"></script>
+        <script type="text/javascript" src="../dynamic/JavaScript/tabulator/modules/responsive_layout.min.js"></script>
     <script type="text/javascript">
         //table setup for bills
         //TODO: Finish Vote table. Ensure its aggregate data
-        var table = new Tabulator("#bill-table", {
+        var table = new Tabulator("#vote-table", {
             ajaxURL:"/api/votedata", //Request URL
             ajaxConfig:"POST", //HTTP Request type
+            responsiveLayout:true, //auto changing sizes
+            resizableColumns:false, //able to manually change size
             height:500, // set height of table
             layout:"fitColumns", //fit columns to width of table
+            groupBy:"parliament", //grouping the bills by parl
+            groupToggleElement:"header", //toggle group on click anywhere in the group header
+            groupHeader:function(data){return "Parliament: " + data.toString()}, //setting the header
+            groupStartOpen:false, //Setting the groups to start closed
             columns:[ //Define Table Columns
-                {title:"Parl.", field:"parliament", sorter:"number", width:5},
-                {title:"ID", field:"billid", sorter:"string", width:15},
-                {title:"Name", field:"billname", sorter:"string", tooltip:true, formatter:"textarea"},
-                {title:"Slot", field:"billslot", sorter:"string", width:10},
-                {title:"Author", field:"author", sorter:"string", formatter:"textarea"},
-                {title:"Co-Sponsor", field:"sponsor", sorter:"string", formatter:"textarea"},
+                {title:"Member", field:"member", sorter:"string"},
+                {title:"Bill", field:"bill", sorter:"string"},
+                {title:"Vote", field:"vote", sorter:"string"},
             ],
         });
     </script>

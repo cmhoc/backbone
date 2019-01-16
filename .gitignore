@@ -14,3 +14,5 @@ google-interface/credentials\.json
 webserver/static/dynamic/CSS/tabulator/
 
 webserver/static/dynamic/JavaScript/
+
+webserver/safetynet\.go

@@ -6,63 +6,19 @@
     <link href="dynamic/CSS/primarystyle.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
     <title>CMHoC</title>
+
+    <script src="dynamic/JavaScript/jquery-3.3.1.min.js"></script>
+    <script>
+        $(function(){
+            $("#includedContent").load("navbar.html");
+        });
+    </script>
+
 </head>
 <body>
     <h1 class="primary-header">CMHoC's Official Website</h1>
-    <div class="navbar">
-        <a href="/">Home</a>
-        <div class="dropdown">
-            <button class="dropbtn" onclick="Dropdown()">Sheets
-            </button>
-            <div class="dropdown-content" id="myDropdown">
-                <a href="sheets/billsheet.html">Bills</a>
-                <a href="sheets/votesheet.html">Votes</a>
-                <a href="sheets/partysheet.html">Parties</a>
-            </div>
-        </div>
-        <div class="dropdown">
-            <button class="dropbtn" onclick="Dropdown2()">Meta
-            </button>
-            <div class="dropdown-content" id="myDropdown2">
-                <a href="meta/ccr.html">CCR</a>
-                <a href="meta/const.html">Constitution</a>
-            </div>
-        </div>
-        <a href="apidesc.html">API</a>
-    </div>
 
-    <script>
-        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
-        function Dropdown() {
-            document.getElementById("myDropdown").classList.toggle("show");
-        }
-
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(e) {
-            if (!e.target.matches('.dropbtn')) {
-                var myDropdown = document.getElementById("myDropdown");
-                if (myDropdown.classList.contains('show')) {
-                    myDropdown.classList.remove('show');
-                }
-            }
-        }
-
-        function Dropdown2() {
-            document.getElementById("myDropdown2").classList.toggle("show");
-        }
-
-        // Close the dropdown if the user clicks outside of it
-        window.onclick = function(a) {
-            if (!a.target.matches('.dropbtn')) {
-                var myDropdown = document.getElementById("myDropdown2");
-                if (myDropdown.classList.contains('show')) {
-                    myDropdown.classList.remove('show');
-                }
-            }
-        }
-    </script>
-
-    <!-- Everything above this is the top of the page and should be on every page in the site -->
+    <div id="includedContent"></div>
 
     <p class="main-body">
         This has been created as an online access portal to the main automation present in the discord bot, which

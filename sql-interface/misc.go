@@ -16,7 +16,11 @@ func DBUpdating(db *sqlx.DB) {
 		//checking if x amount of time has passed
 		if prevCheckTime.Add(time.Minute*tools.Conf.GetDuration("updatetime")).Unix() < time.Now().Unix() {
 			//updating bills
-			Billsr(db)
+			err := Billsr(db)
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Updating Bills")
+				//no return for this statement as this is a simple loop and the error could be fixed
+			}
 			tools.Log.WithField("Bill", Bills).Info("Bills Loaded")
 
 			//updating the check time

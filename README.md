@@ -1,6 +1,6 @@
 # CMHoC Automation and Web Server
 
-![Version: 1.0.2](https://img.shields.io/badge/version-1.0.2-brightgreen.svg)
+![Version: 1.0.5](https://img.shields.io/badge/version-1.0.5-brightgreen.svg)
 [![Go report](https://goreportcard.com/badge/github.com/cmhoc/backbone)](http://goreportcard.com/report/cmhoc/backbone)
 
 ---

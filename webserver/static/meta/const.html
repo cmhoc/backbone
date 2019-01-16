@@ -6,64 +6,65 @@
     <link href="../dynamic/CSS/primarystyle.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
     <title>Const</title>
+
+    <script src="../dynamic/JavaScript/jquery-3.3.1.min.js"></script>
+    <script>
+        $(function(){
+            $("#includedContent").load("../navbar.html");
+        });
+    </script>
+
 </head>
 <body>
 <h1 class="primary-header">Constitution of Model Canada</h1>
 <p class="secondary-body">Enacted on March 21, 2018</p>
-<div class="navbar">
-    <a href="/">Home</a>
-    <div class="dropdown">
-        <button class="dropbtn" onclick="Dropdown()">Sheets
-        </button>
-        <div class="dropdown-content" id="myDropdown">
-            <a href="../sheets/billsheet.html">Bills</a>
-            <a href="#Votesheet">Votes</a>
-            <a href="#Parties">Parties</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <button class="dropbtn" onclick="Dropdown2()">Meta
-        </button>
-        <div class="dropdown-content" id="myDropdown2">
-            <a href="../meta/ccr.html">CCR</a>
-            <a href="../meta/const.html">Constitution</a>
-        </div>
-    </div>
-    <a href="apidesc.html">API</a>
-</div>
 
-<script>
-    /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
-    function Dropdown() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
-
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function(e) {
-        if (!e.target.matches('.dropbtn')) {
-            var myDropdown = document.getElementById("myDropdown");
-            if (myDropdown.classList.contains('show')) {
-                myDropdown.classList.remove('show');
-            }
-        }
-    }
-
-    function Dropdown2() {
-        document.getElementById("myDropdown2").classList.toggle("show");
-    }
-
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function(a) {
-        if (!a.target.matches('.dropbtn')) {
-            var myDropdown = document.getElementById("myDropdown2");
-            if (myDropdown.classList.contains('show')) {
-                myDropdown.classList.remove('show');
-            }
-        }
-    }
-</script>
+<div id="includedContent"></div>
 
 <!-- Everything above this is the top of the page and should be on every page in the site -->
+
+<style>
+    #toc_container {
+        float: right;
+        background: #f9f9f9 none repeat scroll 0 0;
+        border: 1px solid #aaa;
+        display: table;
+        font-size: 95%;
+        margin-bottom: 1em;
+        padding: 20px;
+        width: auto;
+        font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+        text-decoration: none;
+    }
+
+    .toc_title {
+        font-weight: 700;
+        text-align: center;
+        font-family: inherit;
+    }
+
+    #toc_container li, #toc_container ul, #toc_container ul li{
+        list-style: outside none none !important;
+        font-family: inherit;
+    }
+</style>
+
+<div id="toc_container">
+    <p class="toc_title">Contents</p>
+    <ul class="toc_list">
+        <li><a href="#constitutionalsupremacyandextent">Constitutional Supremacy and Extent</a></li>
+        <li><a href="#metavotes">Meta Votes</a></li>
+        <li><a href="#headmoderator">Head Moderator</a></li>
+        <li><a href="#communityadministrator">Community Administrator</a></li>
+        <li><a href="#moderationteam">Moderation Team</a></li>
+        <li><a href="#parliamentteam">Parliament Team</a></li>
+        <li><a href="#moderationteamforcmhocchat">Moderation Team for CMHoC Chat</a></li>
+        <li><a href="#otherteams">Other Teams</a></li>
+        <li><a href="#removalofteammembers">Removal of Team Members</a></li>
+        <li><a href="#bansrulesandpunishments">Bans, Rules, and Punishments</a></li>
+        <li><a href="#amendmentstothemetaconstitution">Amendments to the Meta Constitution</a></li>
+    </ul>
+</div>
 
 <div style="margin-left: 15px">
 <p class="main-body">

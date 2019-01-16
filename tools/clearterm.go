@@ -17,13 +17,21 @@ func init() {
 	clear["windows"] = func() {
 		temp := exec.Command("cmd", "/c", "cls")
 		temp.Stdout = os.Stdout
-		temp.Run()
+		err := temp.Run()
+		if err != nil {
+			Log.WithField("Error", err).Warn("Error Running Command")
+			return
+		}
 	}
 
 	clear["linux"] = func() {
-		cmd := exec.Command("clear")
-		cmd.Stdout = os.Stdout
-		cmd.Run()
+		temp := exec.Command("clear")
+		temp.Stdout = os.Stdout
+		err := temp.Run()
+		if err != nil {
+			Log.WithField("Error", err).Warn("Error Running Command")
+			return
+		}
 	}
 }
 
