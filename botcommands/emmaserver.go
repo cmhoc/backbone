@@ -1,6 +1,7 @@
 package botcommands
 
 import (
+	"backbone/tools"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -12,7 +13,11 @@ const channelid = "410180831412355072" //real channel
 func Flag(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	if message.ChannelID == channelid {
 		if message.Content == (commandPrefix + "flag") {
-			discord.ChannelMessageSend(message.ChannelID, "Support Turned back On")
+			_, err := discord.ChannelMessageSend(message.ChannelID, "Support Turned back On")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
 			flag = 0
 		}
 	}
@@ -31,11 +36,23 @@ func Emmaserver(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	if message.ChannelID == channelid {
 		if message.Content != (commandPrefix + "flag") {
 			if flag == 0 {
-				discord.ChannelMessageSend(message.ChannelID,
-					("Hello, you've asked for help in #crisis-support! " +
-						role + " will be here to help momentarily!"))
-				discord.ChannelMessageSend(message.ChannelID, "Some resources that might help you are:")
-				discord.ChannelMessageSend(message.ChannelID, "https://docs.google.com/document/d/1sjanD5oATaJEFAmMyEwapq-eSd3zOpfkYjUzlwldsiw/edit?usp=sharing")
+				_, err := discord.ChannelMessageSend(message.ChannelID,
+					"Hello, you've asked for help in #crisis-support! " +
+						role + " will be here to help momentarily!")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
+				_, err = discord.ChannelMessageSend(message.ChannelID, "Some resources that might help you are:")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
+				_, err = discord.ChannelMessageSend(message.ChannelID, "https://docs.google.com/document/d/1sjanD5oATaJEFAmMyEwapq-eSd3zOpfkYjUzlwldsiw/edit?usp=sharing")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 			} else {
 				return
 			}

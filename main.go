@@ -2,7 +2,6 @@
 Initially as a test for discordgo, this test has grown into the main backbone for
 cmhocs automation process and controls the majority if not the entirety. Because all streams of the automation are
 connected, much of it can be accessed and adjusted through the discord bot or the website.
-For detailed documentation please view the readme's in each directory.
 Sensitive information has been omitted from the public release.
 Author: /u/thehowlinggreywolf
 Contact @: verielthewolf@gmail.com
@@ -17,20 +16,28 @@ import (
 	"backbone/tools"
 	"backbone/webserver"
 	"github.com/bwmarrin/discordgo"
-	"github.com/gorilla/handlers"
 	"net/http"
 )
 
 func main() {
 	//connecting to the database
 	db := database.Login()
-	db.Begin()
-	//pulling bill data
-	bills := database.Billsr(db)
-	tools.Log.WithField("Bill", bills).Info("Bills Loaded")
+	_, err := db.Begin()
+	if err != nil {
+		tools.Log.WithField("Error", err).Debug("Error Loading Database")
+	}
+
+	//Loading the Automatic Updater
+	go database.DBUpdating(db)
+
+	//Initial Updates
+	err = database.ForceUpdate(db)
+	if err != nil {
+		tools.Log.WithField("Error", err).Debug("Could Not Update SQL based vars")
+	}
 
 	//Loading google Authentication
-	err := google.GoogleAuth()
+	err = google.GoogleAuth()
 	if err != nil {
 		tools.Log.Debug("Error Identified with Google Authentication, all related functions will not work.")
 	} else {
@@ -43,14 +50,24 @@ func main() {
 		tools.Log.Panic("Could not create discord bot")
 	}
 	//loading the bot functions as a goroutine
-	go bothandler(discord)
+	if tools.Conf.GetBool("discord") {
+		go bothandler(discord)
+	} else {
+		tools.Log.Info("Discord Functions not Loaded")
+	}
 	//opening the connection to discord
 	err = discord.Open()
 	if err != nil {
 		tools.Log.Panic("Error Connecting to Discord")
 	}
 	//stops the discord connection from closing until the main script is finished running
-	defer discord.Close()
+	defer func() {
+		err := discord.Close()
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Error Closing Discord")
+			return
+		}
+	}()
 
 	//Turning on the clear terminal loop if debug mode is on
 	if tools.Conf.GetBool("debug") {
@@ -59,20 +76,17 @@ func main() {
 
 	//The following is code for the webserver
 	//Open the webserver
-	staticFileDirectory := http.Dir("./webserver/static/")
-	staticFileHandler := http.StripPrefix("/", http.FileServer(staticFileDirectory))
-	http.Handle("/", staticFileHandler)
-	err = http.ListenAndServe(":"+tools.Conf.GetString("wport"), handlers.LoggingHandler(tools.Log.Out, &myHandler{}))
+	err = webserving()
 	//closes the program if it fails to create the server
 	if err != nil {
-		tools.Log.Fatal("Could not create webserver")
+		tools.Log.WithField("Error", err).Fatal("Error Creating Webserver")
 	}
 }
 
+//adds all the handlers to the bot
 func bothandler(discord *discordgo.Session) {
-	//adding the commands to the discord bot
 	discord.AddHandler(botcommands.Messagelog) //This just outputs messages sent to the log. Used to debug
-	//discord.AddHandler(botcommands.Emmaserver)
+	discord.AddHandler(botcommands.Emmaserver)
 	discord.AddHandler(botcommands.Hereboy)
 	discord.AddHandler(botcommands.Pet)
 	discord.AddHandler(botcommands.Flag)
@@ -89,7 +103,7 @@ func bothandler(discord *discordgo.Session) {
 	discord.AddHandler(botcommands.BillSub)
 	discord.AddHandler(botcommands.VoteCount)
 	discord.AddHandler(func(discord *discordgo.Session, ready *discordgo.Ready) {
-		err := discord.UpdateStatus(0, "Use ./help if youre stuck!")
+		err := discord.UpdateStatus(0, "Visit cmhoc.com!")
 		if err != nil {
 			tools.Log.Debug("Error Setting Discord Status")
 		}
@@ -100,11 +114,32 @@ func bothandler(discord *discordgo.Session) {
 	tools.Log.Info("Discord Functions Loaded")
 }
 
-type myHandler struct{}
+//launches the webserver
+func webserving() error {
 
-func (*myHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if h, err := webserver.Handlers[r.URL.String()]; err {
-		h(w, r)
-		return
+	//creating a webserver
+	mux := http.NewServeMux()
+
+	//static file serving
+	staticFileDirectory := http.Dir(tools.Conf.GetString("wfiles"))
+	staticFileHandler := http.StripPrefix("/", http.FileServer(staticFileDirectory))
+	mux.Handle("/", staticFileHandler)
+
+	//handler scripts
+	//api scripts
+	mux.HandleFunc("/api/billdata", webserver.Billsjson)
+	mux.HandleFunc("/api/partydata", webserver.Partyjson)
+	mux.HandleFunc("/api/votedata", webserver.Votejson)
+	//auth scripts
+	mux.HandleFunc("/auth/user", webserver.AuthSend)
+
+	err := http.ListenAndServeTLS(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"),tools.Conf.GetString("wcert"),
+		tools.Conf.GetString("wkey"),webserver.Logging(mux))
+	if err != nil {
+		tools.Log.Debug("Error in TLS Serving, Serving Without.")
+		err = http.ListenAndServe(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), webserver.Logging(mux))
+		if err != nil {return err}
 	}
+
+	return nil
 }

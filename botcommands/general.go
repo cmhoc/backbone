@@ -38,7 +38,11 @@ func Hereboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	send := "Woof!"
 
 	if message.Content == (commandPrefix + "hereboy") {
-		discord.ChannelMessageSend(message.ChannelID, send)
+		_, err := discord.ChannelMessageSend(message.ChannelID, send)
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Unusual Error")
+			return
+		}
 	}
 }
 
@@ -78,7 +82,11 @@ func Pet(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	send := "^.^ *wags tail*"
 
 	if message.Content == (commandPrefix + "pet") {
-		discord.ChannelMessageSend(message.ChannelID, send)
+		_, err := discord.ChannelMessageSend(message.ChannelID, send)
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Unusual Error")
+			return
+		}
 	}
 }
 
@@ -87,9 +95,17 @@ func Fetch(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		rand.Seed(time.Now().UTC().UnixNano())
 		temp := rand.Intn(2)
 		if temp == 0 {
-			discord.ChannelMessageSend(message.ChannelID, "*wags tail* Want to throw again?")
+			_, err := discord.ChannelMessageSend(message.ChannelID, "*wags tail* Want to throw again?")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
 		} else if temp == 1 {
-			discord.ChannelMessageSend(message.ChannelID, "*whines* It looks like the puppy couldnt find the ball!")
+			_, err := discord.ChannelMessageSend(message.ChannelID, "*whines* It looks like the puppy couldnt find the ball!")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
 		}
 	}
 }
@@ -118,7 +134,7 @@ func Goodboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		gif = gifs[count]
 		tools.Log.WithField("gif#", count).Trace("Gif Set for embed")
 
-		discord.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
+		_, err = discord.ChannelMessageSendEmbed(message.ChannelID, &discordgo.MessageEmbed{
 			Author: &discordgo.MessageEmbedAuthor{},
 			Color:  0x696969, // Grey
 			Image: &discordgo.MessageEmbedImage{
@@ -126,6 +142,10 @@ func Goodboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			},
 			Timestamp: time.Now().Format(time.RFC3339),
 		})
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Unusual Error")
+			return
+		}
 		tools.Log.Trace("Goodboy Gif Embed")
 	}
 }
@@ -134,7 +154,11 @@ func Eatthepuppy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	if message.Content == commandPrefix+"eatthepuppy" {
 		user := message.Author.Mention()
 		send := "?ban " + user + " No eating the puppy"
-		discord.ChannelMessageSend(message.ChannelID, send)
+		_, err := discord.ChannelMessageSend(message.ChannelID, send)
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Unusual Error")
+			return
+		}
 	}
 }
 
@@ -147,7 +171,11 @@ func Shakeapaw(discord *discordgo.Session, message *discordgo.MessageCreate) {
 				URL: "https://static1.squarespace.com/static/5907d42520099e374ad11ba1/t/59197af9c534a5e1ade4a2b8/1494842118347/dog-shake-hands.jpg?format=500w",
 			},
 		}
-		discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+		_, err := discord.ChannelMessageSendEmbed(message.ChannelID, embed)
+		if err != nil {
+			tools.Log.WithField("Error", err).Warn("Unusual Error")
+			return
+		}
 	}
 }
 
@@ -170,12 +198,29 @@ func Todo(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			output, err := os.OpenFile("todo", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
 			if err != nil {
 				tools.Log.Debug("Error Opening File")
-				discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 			}
-			defer output.Close()
-			output.WriteString("[" + temp + "] ")
+			defer func() {
+				err := output.Close()
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Error Closing File")
+				}
+			}()
+			_, err = output.WriteString("[" + temp + "] ")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Writing to File")
+				return
+			}
 			//success message
-			discord.ChannelMessageSend(message.ChannelID, "Todo content added "+"["+temp+"]")
+			_, err = discord.ChannelMessageSend(message.ChannelID, "Todo content added "+"["+temp+"]")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
 		}
 	}
 }
@@ -186,21 +231,43 @@ func Todoread(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			//reading in the file
 			input, err := os.OpenFile("todo", os.O_RDONLY, 0666)
 			if err != nil {
-				discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 				tools.Log.Debug("Error Opening File")
 				return
 			}
-			defer input.Close()
+			defer func() {
+				err := input.Close()
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Error Closing File")
+					return
+				}
+			}()
 			info, _ := input.Stat()
 			size := info.Size()
 			data := make([]byte, size)
-			input.Read(data)
+			_, err = input.Read(data)
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Reading Data")
+				return
+			}
 			temp := string(data)
 			output := strings.Split(temp, "[")
 			tools.Log.WithField("# of Objects", len(output)).Trace("Todo List")
-			discord.ChannelMessageSend(message.ChannelID, "Todo list contents:")
+			_, err = discord.ChannelMessageSend(message.ChannelID, "Todo list contents:")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
 			for i := 1; i < len(output); i++ {
-				discord.ChannelMessageSend(message.ChannelID, fmt.Sprintf("%d: %s", i, "["+output[i]))
+				_, err := discord.ChannelMessageSend(message.ChannelID, fmt.Sprintf("%d: %s", i, "["+output[i]))
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 			}
 		}
 	}
@@ -212,14 +279,22 @@ func Tododelete(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			//reading in the file
 			file, err := os.OpenFile("todo", os.O_RDWR, 0666)
 			if err != nil {
-				discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 				tools.Log.Debug("Error Opening File")
 				return
 			}
 			info, _ := file.Stat()
 			size := info.Size()
 			data := make([]byte, size)
-			file.Read(data)
+			_, err = file.Read(data)
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Reading File")
+				return
+			}
 			temp := string(data)
 			output := strings.Split(temp, "[")
 			tools.Log.WithField("# of Objects", len(output)).Trace("Todo List")
@@ -228,24 +303,50 @@ func Tododelete(discord *discordgo.Session, message *discordgo.MessageCreate) {
 			index, err := strconv.Atoi(index1)
 			//dealing with errors
 			if err != nil {
-				discord.ChannelMessageSend(message.ChannelID, "Int not given")
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Int not given")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 				tools.Log.Debug("Int Not Given")
 				return
 			}
 			if (index-1 > len(output)) || (index-1 < 0) {
-				discord.ChannelMessageSend(message.ChannelID, "Index not in range")
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Index not in range")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
 				return
 			}
 			//deleting the item
-			discord.ChannelMessageSend(message.ChannelID, "Deleted: "+"["+output[index])
+			_, err = discord.ChannelMessageSend(message.ChannelID, "Deleted: "+"["+output[index])
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
 			output = append(output[:index], output[index+1:]...)
 
-			file.Close()
+			err = file.Close()
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Closing File")
+				return
+			}
 			//overwriting the file
 			file, _ = os.Create("todo")
-			defer file.Close()
+			defer func() {
+				err := file.Close()
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Error Closing File")
+					return
+				}
+			}()
 			for i := 1; i < len(output); i++ {
-				file.WriteString("[" + output[i])
+				_, err := file.WriteString("[" + output[i])
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Error Writing to File")
+					return
+				}
 			}
 		}
 	}

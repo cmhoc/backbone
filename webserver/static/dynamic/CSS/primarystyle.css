@@ -1,0 +1,133 @@
+/* TODO: Create a .min version for use on the webserver */
+
+/* Navbar container */
+.navbar {
+    overflow: hidden;
+    background-color: #333;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+}
+
+/* Links inside the navbar */
+.navbar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+/* The dropdown container */
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+/* Dropdown button */
+.dropdown .dropbtn {
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover, .dropdown:hover .dropbtn, .dropbtn:focus {
+    background-color: red;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 82px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 12px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Toggling the Dropdown Display */
+.show {
+    display: block;
+}
+
+/* Footer Customisation */
+.site-footer {
+    position: relative;
+    font-size: 12px;
+    text-align: center;
+    color: #f9f9f9;
+    background-color: #333;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+}
+
+/* Primary Header */
+.primary-header {
+    font-size: 34px;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+    color: #333;
+    outline-color: #f9f9f9;
+}
+
+/* Sub Headers */
+.sub-header {
+    font-size: 21px;
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+    color: #333;
+}
+
+/* Primary Body Text */
+.main-body {
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+    color: #333;
+    margin: 15px;
+    line-height: 1.5;
+}
+
+/* Secondary Body Text */
+.secondary-body {
+    font-family: "Montserrat", "Open Sans", "arial", sans-serif;
+    color: #333;
+    font-size: 12px;
+    margin: 15px;
+}
+
+/* Specialized format for the 'code' blocks */
+.code-block {
+    background-color: #333;
+    color: #f9f9f9;
+    font-size: 14px;
+    width: 350px;
+}
+
+.code-block a {
+    color: inherit;
+    font-size: inherit;
+    text-decoration: none;
+}
+
+.code-block a:hover {
+    background: red;
+}

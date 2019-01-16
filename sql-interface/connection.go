@@ -1,11 +1,10 @@
 // basic connection and disconnection functions
-
 package database
 
 import (
 	"backbone/tools"
-	"database/sql"
 	"fmt"
+	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
 
@@ -20,7 +19,7 @@ var (
 )
 
 // connection function
-func Login() *sql.DB {
+func Login() *sqlx.DB {
 
 	// putting everything needed into one string
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
@@ -28,10 +27,11 @@ func Login() *sql.DB {
 		host, port, user, password, dbname)
 
 	// opening the sql connection
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := sqlx.Open("postgres", psqlInfo)
 	if err != nil {
 		tools.Log.Panic(err)
 	}
+
 	tools.Log.Info("Database Logged In")
 	return db
 }

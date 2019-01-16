@@ -1,14 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="../assets/css/custom.css">
     <meta charset="UTF-8">
-    <title>CMHoC Webserver</title>
+    <meta name="author" content="thehowlinggreywolf">
+    <link href="dynamic/CSS/primarystyle.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans" rel="stylesheet">
+    <title>CMHoC</title>
+
+    <script src="dynamic/JavaScript/jquery-3.3.1.min.js"></script>
+    <script>
+        $(function(){
+            $("#includedContent").load("navbar.html");
+        });
+    </script>
+
 </head>
 <body>
-    <h1>Welcome to CMHoC's Webserver</h1>
-    <h2>Please excuse my lack of HTML skills</h2>
+    <h1 class="primary-header">CMHoC's Official Website</h1>
+
+    <div id="includedContent"></div>
+
+    <p class="main-body">
+        This has been created as an online access portal to the main automation present in the discord bot, which
+        coincidentally this also runs on. The entirety of the site is currently experimental, so proceed with caution.
+    </p>
+
+    <a href="/auth/user" class="main-body">If you are a member of CMHoC please authenticate yourself here.</a>
+
+    <p class="main-body">Bonjour! Parlez-vous français et êtes-vous prêt à aider à traduire ce site? J'aimerais avoir une version entièrement traduite de ce site pour la consommation, mais j'aurai besoin d'aide pour cela. Veuillez me contacter si vous êtes intéressé.</p>
+
+    <p class="secondary-body">
+        Please Note: The sheets and the API have yet to be completed and are also not fully updated
+    </p>
 </body>
+<footer class="site-footer">
+     Created and Maintained by /u/thehowlinggreywolf <br>
+     HTML, CSS, and JS are not my primary programming languages so please forgive the sites aesthetics
+</footer>
 </html>

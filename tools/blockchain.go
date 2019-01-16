@@ -21,14 +21,19 @@ type Chain []Block //allows me have methods with slices of Blocks (Generally spe
 
 var Blockchain Chain //Block chain in use by the system
 
-func (block Block) View() {
+//Stringer for println
+func (block Block) String() string {
+	/* Deprecated through Stringer integration
 	fmt.Printf("\n")
 	fmt.Printf("Index: %d\n", block.Index)
 	fmt.Printf("Timestamp: %s\n", block.Timestamp)
 	fmt.Printf("Data: %s\n", block.Data)
 	fmt.Printf("Hash: %s\n", block.Hash)
 	fmt.Printf("PrevHash: %s\n", block.PrevHash)
-	fmt.Printf("\n")
+	fmt.Printf("\n") */
+
+	return fmt.Sprintf("Index: %d\nTimestamp: %s\nData: %s\nHash: %s\nPrevHash: %s\n", block.Index,
+		block.Timestamp, block.Data, block.Hash, block.PrevHash)
 }
 
 func (chain Chain) View() {
