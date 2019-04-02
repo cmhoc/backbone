@@ -5,11 +5,15 @@ import (
 	"backbone/reddit-interface"
 	"backbone/tools"
 	"github.com/bwmarrin/discordgo"
+	"github.com/gorilla/feeds"
 	"strings"
 	"time"
 )
 
-var roles map[string]string //saving the CMHoC roles into a map
+var (
+	roles map[string]string //saving the CMHoC roles into a map
+	Content []*feeds.Item //Content for announcements RSS feed
+	)
 
 func init() {
 	//loading important roles into the map

@@ -10,7 +10,7 @@ Copyright: MIT License
 package main
 
 import (
-	"backbone/botcommands"
+	dcom "backbone/botcommands"
 	"backbone/google-interface"
 	"backbone/sql-interface"
 	"backbone/tools"
@@ -45,7 +45,7 @@ func main() {
 	}
 
 	//Followings is all for the discord bot
-	discord, err := discordgo.New("Bot " + botcommands.Bottoken)
+	discord, err := discordgo.New("Bot " + dcom.Bottoken)
 	if err != nil {
 		tools.Log.Panic("Could not create discord bot")
 	}
@@ -85,25 +85,24 @@ func main() {
 
 //adds all the handlers to the bot
 func bothandler(discord *discordgo.Session) {
-	discord.AddHandler(botcommands.Messagelog) //This just outputs messages sent to the log. Used to debug
-	discord.AddHandler(botcommands.Emmaserver)
-	discord.AddHandler(botcommands.Hereboy)
-	discord.AddHandler(botcommands.Pet)
-	discord.AddHandler(botcommands.Flag)
-	discord.AddHandler(botcommands.Fetch)
-	discord.AddHandler(botcommands.Help)
-	discord.AddHandler(botcommands.Goodboy)
-	discord.AddHandler(botcommands.Eatthepuppy)
-	discord.AddHandler(botcommands.Shakeapaw)
-	discord.AddHandler(botcommands.Cmhochelp)
-	discord.AddHandler(botcommands.Seatchart)
-	discord.AddHandler(botcommands.Todo)
-	discord.AddHandler(botcommands.Todoread)
-	discord.AddHandler(botcommands.Tododelete)
-	discord.AddHandler(botcommands.BillSub)
-	discord.AddHandler(botcommands.VoteCount)
+	discord.AddHandler(dcom.Messagelog) //This just outputs messages sent to the log. Used to debug
+	discord.AddHandler(dcom.Emmaserver)
+	discord.AddHandler(dcom.Hereboy)
+	discord.AddHandler(dcom.Pet)
+	discord.AddHandler(dcom.Flag)
+	discord.AddHandler(dcom.Fetch)
+	discord.AddHandler(dcom.Help)
+	discord.AddHandler(dcom.Goodboy)
+	discord.AddHandler(dcom.Eatthepuppy)
+	discord.AddHandler(dcom.Shakeapaw)
+	discord.AddHandler(dcom.Cmhochelp)
+	discord.AddHandler(dcom.Seatchart)
+	discord.AddHandler(dcom.Todo)
+	discord.AddHandler(dcom.BillSub)
+	discord.AddHandler(dcom.VoteCount)
+	discord.AddHandler(dcom.Nyoom)
 	discord.AddHandler(func(discord *discordgo.Session, ready *discordgo.Ready) {
-		err := discord.UpdateStatus(0, "Visit cmhoc.com!")
+		err := discord.UpdateStatus(0, "Visit https://cmhoc.com!")
 		if err != nil {
 			tools.Log.Debug("Error Setting Discord Status")
 		}
@@ -130,15 +129,18 @@ func webserving() error {
 	mux.HandleFunc("/api/billdata", webserver.Billsjson)
 	mux.HandleFunc("/api/partydata", webserver.Partyjson)
 	mux.HandleFunc("/api/votedata", webserver.Votejson)
+	mux.HandleFunc("/api/anounce", webserver.AnnouncementRSS)
 	//auth scripts
 	mux.HandleFunc("/auth/user", webserver.AuthSend)
 
-	err := http.ListenAndServeTLS(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"),tools.Conf.GetString("wcert"),
-		tools.Conf.GetString("wkey"),webserver.Logging(mux))
+	err := http.ListenAndServeTLS(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), tools.Conf.GetString("wcert"),
+		tools.Conf.GetString("wkey"), webserver.Logging(mux))
 	if err != nil {
 		tools.Log.Debug("Error in TLS Serving, Serving Without.")
 		err = http.ListenAndServe(tools.Conf.GetString("wdomain")+":"+tools.Conf.GetString("wport"), webserver.Logging(mux))
-		if err != nil {return err}
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

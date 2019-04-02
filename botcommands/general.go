@@ -180,102 +180,9 @@ func Shakeapaw(discord *discordgo.Session, message *discordgo.MessageCreate) {
 }
 
 func Todo(discord *discordgo.Session, message *discordgo.MessageCreate) {
+	if message.Author.ID == "155084706868625408" {
 	if strings.Contains(message.Content, commandPrefix+"todo") {
 		if strings.Contains(message.Content, commandPrefix+"todo list") {
-			return
-		}
-		if strings.Contains(message.Content, commandPrefix+"todo delete") {
-			return
-		}
-		if strings.TrimPrefix(message.Content, commandPrefix+"todo") == "" {
-			return
-		}
-		if message.Author.ID == "155084706868625408" {
-			//trimming prefix to just get the message
-			temp := strings.TrimPrefix(message.Content, commandPrefix+"todo ")
-			tools.Log.WithField("Addition", temp).Trace("Todo Addition")
-			//outputting to the files
-			output, err := os.OpenFile("todo", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
-			if err != nil {
-				tools.Log.Debug("Error Opening File")
-				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
-				if err != nil {
-					tools.Log.WithField("Error", err).Warn("Unusual Error")
-					return
-				}
-			}
-			defer func() {
-				err := output.Close()
-				if err != nil {
-					tools.Log.WithField("Error", err).Warn("Error Closing File")
-				}
-			}()
-			_, err = output.WriteString("[" + temp + "] ")
-			if err != nil {
-				tools.Log.WithField("Error", err).Warn("Error Writing to File")
-				return
-			}
-			//success message
-			_, err = discord.ChannelMessageSend(message.ChannelID, "Todo content added "+"["+temp+"]")
-			if err != nil {
-				tools.Log.WithField("Error", err).Warn("Unusual Error")
-				return
-			}
-		}
-	}
-}
-
-func Todoread(discord *discordgo.Session, message *discordgo.MessageCreate) {
-	if strings.Contains(message.Content, commandPrefix+"todo list") {
-		if message.Author.ID == "155084706868625408" {
-			//reading in the file
-			input, err := os.OpenFile("todo", os.O_RDONLY, 0666)
-			if err != nil {
-				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
-				if err != nil {
-					tools.Log.WithField("Error", err).Warn("Unusual Error")
-					return
-				}
-				tools.Log.Debug("Error Opening File")
-				return
-			}
-			defer func() {
-				err := input.Close()
-				if err != nil {
-					tools.Log.WithField("Error", err).Warn("Error Closing File")
-					return
-				}
-			}()
-			info, _ := input.Stat()
-			size := info.Size()
-			data := make([]byte, size)
-			_, err = input.Read(data)
-			if err != nil {
-				tools.Log.WithField("Error", err).Warn("Error Reading Data")
-				return
-			}
-			temp := string(data)
-			output := strings.Split(temp, "[")
-			tools.Log.WithField("# of Objects", len(output)).Trace("Todo List")
-			_, err = discord.ChannelMessageSend(message.ChannelID, "Todo list contents:")
-			if err != nil {
-				tools.Log.WithField("Error", err).Warn("Unusual Error")
-				return
-			}
-			for i := 1; i < len(output); i++ {
-				_, err := discord.ChannelMessageSend(message.ChannelID, fmt.Sprintf("%d: %s", i, "["+output[i]))
-				if err != nil {
-					tools.Log.WithField("Error", err).Warn("Unusual Error")
-					return
-				}
-			}
-		}
-	}
-}
-
-func Tododelete(discord *discordgo.Session, message *discordgo.MessageCreate) {
-	if strings.Contains(message.Content, commandPrefix+"todo delete") {
-		if message.Author.ID == "155084706868625408" {
 			//reading in the file
 			file, err := os.OpenFile("todo", os.O_RDWR, 0666)
 			if err != nil {
@@ -347,6 +254,115 @@ func Tododelete(discord *discordgo.Session, message *discordgo.MessageCreate) {
 					tools.Log.WithField("Error", err).Warn("Error Writing to File")
 					return
 				}
+			}
+		}
+		if strings.Contains(message.Content, commandPrefix+"todo delete") {
+			//reading in the file
+			input, err := os.OpenFile("todo", os.O_RDONLY, 0666)
+			if err != nil {
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
+				tools.Log.Debug("Error Opening File")
+				return
+			}
+			defer func() {
+				err := input.Close()
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Error Closing File")
+					return
+				}
+			}()
+			info, _ := input.Stat()
+			size := info.Size()
+			data := make([]byte, size)
+			_, err = input.Read(data)
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Reading Data")
+				return
+			}
+			temp := string(data)
+			output := strings.Split(temp, "[")
+			tools.Log.WithField("# of Objects", len(output)).Trace("Todo List")
+			_, err = discord.ChannelMessageSend(message.ChannelID, "Todo list contents:")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
+			for i := 1; i < len(output); i++ {
+				_, err := discord.ChannelMessageSend(message.ChannelID, fmt.Sprintf("%d: %s", i, "["+output[i]))
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
+			}
+		}
+		if strings.TrimPrefix(message.Content, commandPrefix+"todo") == "" {
+			_, err := discord.ChannelMessageSend(message.ChannelID, "Invalid Usage.")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
+		}
+			//trimming prefix to just get the message
+			temp := strings.TrimPrefix(message.Content, commandPrefix+"todo ")
+			tools.Log.WithField("Addition", temp).Trace("Todo Addition")
+			//outputting to the files
+			output, err := os.OpenFile("todo", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
+			if err != nil {
+				tools.Log.Debug("Error Opening File")
+				_, err := discord.ChannelMessageSend(message.ChannelID, "Error Opening File")
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Unusual Error")
+					return
+				}
+			}
+			defer func() {
+				err := output.Close()
+				if err != nil {
+					tools.Log.WithField("Error", err).Warn("Error Closing File")
+				}
+			}()
+			_, err = output.WriteString("[" + temp + "] ")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Error Writing to File")
+				return
+			}
+			//success message
+			_, err = discord.ChannelMessageSend(message.ChannelID, "Todo content added "+"["+temp+"]")
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
+			}
+		}
+	}
+}
+
+//A meme, reacts with 'nyoom' to messages containing 'nyoom'
+func Nyoom(discord *discordgo.Session, message *discordgo.MessageCreate) {
+	if strings.Contains(strings.ToLower(message.Content), "nyoom") {
+		temp, err := discord.ChannelMessage("552232502782066729","552272535350280222") //couldnt figure out the ID's so ill have the program do it
+		if err != nil {
+			if err != nil {
+				tools.Log.WithField("Error", err).Error("Original Nyoom Gone")
+				return
+			}
+		}
+		var reactions [5]*discordgo.Emoji
+		for i:=0;i<5;i++ {
+			reactions[i] = temp.Reactions[i].Emoji
+		}
+		var apinames [5]string
+		for i:=0;i<5;i++ {
+			apinames[i] = reactions[i].APIName()
+		}
+		for i:=0;i<5;i++ {
+			err = discord.MessageReactionAdd(message.ChannelID, message.ID, apinames[i])
+			if err != nil {
+				tools.Log.WithField("Error", err).Warn("Unusual Error")
+				return
 			}
 		}
 	}
