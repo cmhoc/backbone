@@ -15,7 +15,7 @@ func fetch(discord *discordgo.Session, message *discordgo.MessageCreate) {
 	if message.Author.ID == discord.State.User.ID {
 		return
 	}
-	if message.Content == (prefix + "fetch") {
+	if message.Content == prefix + "fetch" {
 		rand.Seed(time.Now().UTC().UnixNano())
 		temp := rand.Intn(2)
 		if temp == 0 {
@@ -40,7 +40,7 @@ func petPuppy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		return
 	}
 	// If the message is "ping" reply with "Pong!"
-	if message.Content == prefix + "pet" {
+	if message.Content == prefix+"pet" {
 		_, _ = discord.ChannelMessageSend(message.ChannelID, "^.^ *wags tail*")
 	}
 
@@ -60,7 +60,7 @@ func goodboy(discord *discordgo.Session, message *discordgo.MessageCreate) {
 		client := gophy.NewClient(co)
 		//gif, err := client.GetGifById("ygCJ5Bul73NArGOSFN")
 		//if err != nil {
-			//log.Fatal(err)
+		//log.Fatal(err)
 		//}
 		gifs, _, err := client.SearchGifs("dog", "pg", limit, 0)
 		if err != nil {
