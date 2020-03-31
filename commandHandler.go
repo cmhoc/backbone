@@ -37,6 +37,11 @@ func (ch commandHandler) loadCommands() {
 	ch.cmds = append(ch.cmds, newCommand(fetch, "fetch", "Play fetch with the puppy!"))
 	ch.cmds = append(ch.cmds, newCommand(goodboy, "goodboy", "Return a random doggo gif"))
 
+	//Commands just for me
+	ch.cmds = append(ch.cmds, newCommand(todoAdd, "todo", "Add an item to the todo list (dev only)"))
+	ch.cmds = append(ch.cmds, newCommand(todoDelete, "todo delete <i>", "Delete the item i from the list (dev only)"))
+	ch.cmds = append(ch.cmds, newCommand(todoRead, "todo list", "List the current todo list (dev only)"))
+
 	ch.generateHelpFunction()
 
 	for _, c := range ch.cmds {
